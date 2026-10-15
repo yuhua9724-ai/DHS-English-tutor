@@ -42,24 +42,26 @@ const Marking = (() => {
     return { max: 1, score, points, errors, note: "" };
   }
 
-  /* B · Key detail (1 mark: a relevant detail AND its function, in own words) */
+  /* B · Key detail (1 mark): exact words from the text + an explanation in own words */
   function markB(seg, detail, why) {
     const r = (seg.rubric && seg.rubric.B) || {};
     const d = String(detail || ""), w = String(why || "");
-    const all = d + " " + w;
     const errors = [];
-    if (META.test(all)) errors.push("You are writing about your difficulty instead of answering. Pick one thing from the section and say what it shows.");
-    const relevant = r.relevant ? rx(r.relevant).test(all) : words(d).length >= 3;
+    if (META.test(d + " " + w)) errors.push("You are writing about your difficulty instead of answering. Copy one detail from the text, then say what it shows.");
+    const relevant = r.relevant ? rx(r.relevant).test(d) : words(d).length >= 3;
     const hasFn = words(w).length >= 5 && (r.function ? rx(r.function).test(w) : /(show|suggest|because|so|make|mean|feel|why|seem|look)/i.test(w));
-    const copy = copiedRun(r.allowQuote ? w : all, 7);
+    const copy = copiedRun(w, 7);
     const own = !copy;
-    if (!relevant) errors.push(r.irrelevant || "This detail is not the most important one in the section. Look for what drives the action or the mood.");
-    if (!hasFn) errors.push("You mentioned a detail but did not explain why it matters. Add: This shows … / This makes Billy …");
-    if (copy) errors.push(`You copied too closely from the text (“${copy}…”). Rephrase the detail in your own words.`);
+    let exact = true;
+    try { if (typeof PdfView !== "undefined" && PdfView.ready() && words(d).length >= 3) exact = PdfView.contains(d); } catch { exact = true; }
+    if (!relevant) errors.push(r.irrelevant || "The detail box should hold the exact words of ONE detail that answers the question. Check the question again.");
+    if (!exact) errors.push("Your quotation does not match the text exactly. For a literal question, copy the words carefully.");
+    if (!hasFn) errors.push("You copied a detail but did not explain what it shows. Add: This shows … / This suggests …");
+    if (copy) errors.push(`Your explanation copies the text (“${copy}…”). Explain it in your own words.`);
     const points = [
-      pt("relevant", "Chooses a detail that really drives the action or the mood", relevant, r.irrelevant || "Choose a detail that drives the action or the mood."),
-      pt("function", "Explains what the detail shows or why it matters", hasFn, "Add what the detail shows or why it matters."),
-      pt("own", "Uses own words (not copied)", own, "Rephrase it in your own words.")
+      pt("relevant", "Copies a detail that answers the question", relevant, r.irrelevant || "Copy the exact words of ONE detail that answers the question."),
+      pt("function", "Explains what the detail shows", hasFn, "Say what the detail shows or why it matters."),
+      pt("own", "Explanation is in own words (not copied)", own, "Rephrase the explanation in your own words.")
     ];
     const score = relevant && hasFn && own ? 1 : 0;
     return { max: 1, score, points, errors, note: "" };
