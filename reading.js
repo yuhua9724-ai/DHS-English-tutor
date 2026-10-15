@@ -325,7 +325,10 @@ function remarkIfStale(seg, d, key) {
 
 function typeChip(seg, key) {
   const t = seg.tags && seg.tags[key];
-  return t ? `<span class="type-chip">School question type: ${escapeHtml(t)}</span>` : "";
+  const L = typeof lessons !== "undefined" && lessons.landlady;
+  const n = L ? L.segments.indexOf(seg) : -1;
+  const where = n >= 0 && seg.start ? `<p class="where-line"><b>Section ${n + 1} of ${L.segments.length}: ${escapeHtml(seg.title)}</b> · this question is only about the text from <b>▶ ${n + 1}</b> to <b>■ ${n + 1}</b> (starts “${escapeHtml(seg.start)}…”).</p>` : "";
+  return where + (t ? `<span class="type-chip">School question type: ${escapeHtml(t)}</span>` : "");
 }
 
 function markCard(res, heading, sub) {
