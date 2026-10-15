@@ -61,7 +61,9 @@ const EXAM_AURORA = (() => {
         const t = T(a).replace(/aurora\s+borealis/gi, " ");
         const au = has(t, /aurora/i), bo = has(t, /boreas/i) || !!nearWord(t, "boreas");
         const r = res(1, [
-          pt("aurora", "Aurora (goddess of dawn)", au, "Add the first source of the name: Aurora, the Roman goddess of dawn."),
+          pt("aurora", "Aurora (goddess of dawn)", au, has(t, /goddess|dawn/i)
+            ? "You described her (“goddess of dawn”) but did not write her NAME. The official scheme says the word “Aurora” is required. Write: Aurora, the Roman goddess of dawn."
+            : "Add the first source of the name: Aurora, the Roman goddess of dawn."),
           pt("boreas", "Boreas (god of the north wind)", bo, "Add the second source of the name: Boreas, the Greek god of the north wind.")
         ], []);
         r.score = au && bo ? 1 : 0;
