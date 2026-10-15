@@ -557,3 +557,24 @@ body.focus-mode .text-pane .material-viewer { height: auto; min-height: 0; }
 .exam-split.wide { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
 .exam-split.wide .exam-frame { height: 90vh; }
 @media (max-width: 900px) { .exam-split.wide { grid-template-columns: 1fr; } }
+/* Exam focus mode */
+body.exam-focus-on { overflow: hidden; }
+.exam-focus { position: fixed; inset: 0; z-index: 200; background: var(--paper); display: flex; flex-direction: column; }
+.focus-bar { display: flex; gap: 14px; align-items: center; padding: 8px 14px; background: var(--white); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.focus-bar b { font: 600 17px Georgia, serif; }
+.focus-bar .focus-go { margin-left: auto; background: var(--ink); color: #fff; }
+.focus-body { flex: 1; min-height: 0; display: grid; }
+.focus-left { display: flex; flex-direction: column; min-width: 0; min-height: 0; padding: 8px 0 8px 10px; }
+.focus-tools { display: flex; justify-content: flex-end; padding-bottom: 6px; }
+.focus-tools .pdf-tools { justify-content: flex-end; }
+.focus-frame { flex: 1; min-height: 0; }
+.focus-frame .exam-frame { width: 100%; height: 100%; border: 1px solid var(--line); border-radius: 10px; }
+.focus-split { cursor: col-resize; background: var(--line); border-radius: 4px; margin: 8px 0; }
+.focus-split:hover { background: var(--coral); }
+.focus-right { overflow-y: auto; padding: 8px 12px 40px 6px; display: grid; gap: 14px; align-content: start; }
+.small-btn.focus-go { font-weight: 800; }
+@media (max-width: 800px) { .focus-body { grid-template-columns: 1fr !important; grid-template-rows: 45% 8px 1fr; } .focus-split { cursor: row-resize; } }
+.exam-pdfwrap { position: relative; height: 78vh; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.exam-split.wide .exam-pdfwrap { height: 90vh; }
+.focus-frame.exam-pdfwrap { height: auto; }
+.exam-q .where-line { margin: 0 0 10px; }
