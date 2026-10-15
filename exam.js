@@ -1,4 +1,3 @@
-
 /* DHS English Studio — Exam Papers: real school papers, marked against the official answer key.
    First attempt is locked and kept; the rewrite is compared with it. Records stay in this browser. */
 (() => {
@@ -11,7 +10,10 @@
   const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const wcount = t => (String(t || "").match(/\S+/g) || []).length;
   const rec = id => (st.aurora.q[id] = st.aurora.q[id] || {});
-  let wide = false, pdfUrl = null, timer = null, left = P.minutes * 60;
+  const ExamPdf = createPdfViewer();
+  const pdfRoot = document.createElement("div"); pdfRoot.className = "pdf-container";
+  ExamPdf.init(pdfRoot);
+  let activeQ = "q1", wide = false, focus = false, split = 55, pdfUrl = null, timer = null, left = P.minutes * 60;
 
   const allQs = P.questions.concat([{ id: "q7", no: "7", marks: 15, tag: "", kind: "Summary · paragraphs 4–6" }]);
   const run = (q, text) => q.id === "q7" ? P.markSummary(text) : q.mark(text);
@@ -28,6 +30,8 @@
     const chip = `<span class="type-chip">${q.tag ? "School tag " + q.tag + " · " : ""}${esc(q.kind)}</span> <span class="marks-chip">[${q.marks}]</span>`;
     const stem = is7 ? `Using your own words as far as possible, summarise the different beliefs various cultures had about the auroras. Use only paragraphs 4–6. Continuous writing, no more than 80 words (the opening is not counted).` : esc(q.stem);
     let html = `<article class="panel exam-q" id="eq-${q.id}"><div class="panel-head"><div><p class="eyebrow">QUESTION ${q.no}</p>${chip}</div></div><p class="q-stem">${stem}</p>`;
+    const wh = P.where[q.id];
+    if (wh) html += `<p class="where-line">Question ${q.no} is about <b>${wh.text}</b> (from “${esc(wh.start)}…”). <button type="button" class="find-seg-btn" data-act="find" data-q="${q.id}">↑ Show it in the text</button></p>`;
     if (!done) {
       html += `<details class="strategy"><summary>Before you write: how to read this question</summary><p>${esc(is7 ? "Find one belief per group in paragraphs 4–6. For each: WHO believed WHAT. Change the words, but keep the key idea. Name the group each time." : q.strategy)}</p></details>`;
       html += is7 ? `<p class="opening"><b>${esc(P.summaryOpening)}</b> …</p>` : "";
@@ -67,14 +71,36 @@
   }
   const fmtTime = s => `${String(Math.floor(Math.abs(s) / 60)).padStart(2, "0")}:${String(Math.abs(s) % 60).padStart(2, "0")}${s < 0 ? " over" : ""}`;
 
-  function pdfPane() {
-    return `<div class="panel exam-pdf"><div class="panel-head"><div><p class="eyebrow">THE PASSAGE (INSERT)</p></div><div class="pdf-tools">${pdfUrl ? `<a class="small-btn" href="${pdfUrl}" target="_blank" rel="noopener">Open in new tab ↗</a><button type="button" class="small-btn" data-act="wide">${wide ? "Normal view" : "Wide view"}</button>` : ""}<label class="import-btn">${pdfUrl ? "Replace insert PDF" : "Load the Insert PDF"}<input id="exam-pdf-file" type="file" accept="application/pdf"></label></div></div>${pdfUrl ? `<iframe class="exam-frame" src="${pdfUrl}" title="Text 4 insert"></iframe>` : `<p class="small">Choose the school’s Text 4 Insert PDF from your own device. It stays in this browser only; it is not uploaded to the website.</p>`}</div>`;
+  function pdfTools() {
+    return `<div class="pdf-tools">${pdfUrl ? `<button type="button" class="small-btn" data-act="zoomout">−</button><button type="button" class="small-btn" data-act="zoomin">+</button><button type="button" class="small-btn focus-go" data-act="focus">${focus ? "Exit focus (Esc)" : "⛶ Focus mode: passage + questions full screen"}</button>${focus ? "" : `<button type="button" class="small-btn" data-act="wide">${wide ? "Normal view" : "Wide view"}</button>`}` : ""}<label class="import-btn">${pdfUrl ? "Replace insert PDF" : "Load the Insert PDF"}<input id="exam-pdf-file" type="file" accept="application/pdf"></label></div>`;
   }
+  function pdfPane() {
+    return `<div class="panel exam-pdf"><div class="panel-head"><div><p class="eyebrow">THE PASSAGE (INSERT)</p></div>${pdfTools()}</div>${pdfUrl ? `<div id="frame-slot" class="exam-pdfwrap"></div>` : `<p class="small">Choose the school’s Text 4 Insert PDF from your own device. It stays in this browser only; it is not uploaded to the website.</p>`}</div>`;
+  }
+  function qsHtml() { return allQs.map(questionCard).join("") + `<div class="panel"><button class="text-btn" data-act="reset">Clear this paper’s answers</button></div>`; }
 
   function render(keepScroll) {
     const y = window.scrollY;
-    const active = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.q : null;
-    root.innerHTML = paperBar() + `<div class="exam-split${wide ? " wide" : ""}"><div class="exam-left">${pdfPane()}</div><div class="exam-right">${allQs.map(questionCard).join("")}<div class="panel"><button class="text-btn" data-act="reset">Clear this paper’s answers</button></div></div></div>`;
+    const fr = root.querySelector("#focus-right"); const frTop = fr ? fr.scrollTop : 0;
+    document.body.classList.toggle("exam-focus-on", focus);
+    if (focus) {
+      const t = totals();
+      root.innerHTML = `<div class="exam-focus"><div class="focus-bar"><b>${esc(P.title)}</b><span class="small">First-attempt score: <b>${t.got} / ${t.max}</b></span><span class="timer" id="exam-timer">${fmtTime(left)}</span><button class="small-btn" data-act="timer">${timer ? "Stop timer" : "Start timer"}</button><button class="small-btn focus-go" data-act="focus">Exit focus (Esc)</button></div><div class="focus-body" id="focus-body" style="grid-template-columns:${split}% 10px 1fr"><div class="focus-left"><div class="focus-tools">${pdfTools()}</div><div id="frame-slot" class="focus-frame exam-pdfwrap"></div></div><div class="focus-split" id="focus-split" title="Drag to resize"></div><div class="focus-right" id="focus-right">${qsHtml()}</div></div></div>`;
+    } else {
+      root.innerHTML = paperBar() + `<div class="exam-split${wide ? " wide" : ""}"><div class="exam-left">${pdfPane()}</div><div class="exam-right">${qsHtml()}</div></div>`;
+    }
+    const slot = root.querySelector("#frame-slot");
+    if (slot) slot.appendChild(pdfRoot);
+    const nfr = root.querySelector("#focus-right"); if (nfr) nfr.scrollTop = frTop;
+    const sp = root.querySelector("#focus-split");
+    if (sp) sp.addEventListener("pointerdown", ev => {
+      ev.preventDefault(); sp.setPointerCapture(ev.pointerId);
+      const body = root.querySelector("#focus-body"), rect = body.getBoundingClientRect();
+      pdfRoot.style.pointerEvents = "none";
+      const mv = e2 => { split = Math.max(25, Math.min(75, ((e2.clientX - rect.left) / rect.width) * 100)); body.style.gridTemplateColumns = `${split}% 10px 1fr`; };
+      const up = () => { sp.removeEventListener("pointermove", mv); sp.removeEventListener("pointerup", up); pdfRoot.style.pointerEvents = ""; };
+      sp.addEventListener("pointermove", mv); sp.addEventListener("pointerup", up);
+    });
     root.querySelectorAll("textarea").forEach(ta => ta.addEventListener("input", () => { const w = wcount(ta.value); const el = root.querySelector(ta.dataset.retry ? "#wc-q7r" : "#wc-q7"); if (el) { el.textContent = w; el.classList.toggle("over", w > 80); } }));
     root.querySelectorAll("textarea[data-retry]").forEach(ta => ta.dispatchEvent(new Event("input")));
     const li = root.querySelector("#lang-in");
@@ -97,6 +123,10 @@
     } else if (act === "timer") {
       if (timer) { clearInterval(timer); timer = null; } else { timer = setInterval(() => { left--; const el = root.querySelector("#exam-timer"); if (el) el.textContent = fmtTime(left); }, 1000); }
       render(true);
+    } else if (act === "focus") { focus = !focus; render(true); if (focus) window.scrollTo(0, 0);
+    } else if (act === "zoomin") { ExamPdf.setZoom(ExamPdf.getZoom() + 0.15);
+    } else if (act === "zoomout") { ExamPdf.setZoom(ExamPdf.getZoom() - 0.15);
+    } else if (act === "find") { activeQ = q.id; applyHL(true);
     } else if (act === "wide") { wide = !wide; render(true);
     } else if (act === "reset") {
       if (confirm("Clear all answers and scores for this paper? This cannot be undone.")) { st.aurora = { q: {}, lang: null }; save(); render(); }
@@ -108,7 +138,20 @@
     if (typeof PdfStore !== "undefined") PdfStore.put("aurora-insert", { data: buf, name: e.target.files[0].name });
     setPdf(buf); 
   });
-  function setPdf(buf) { if (pdfUrl) URL.revokeObjectURL(pdfUrl); pdfUrl = URL.createObjectURL(new Blob([buf], { type: "application/pdf" })); render(true); }
+  async function setPdf(buf) {
+    if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+    pdfUrl = URL.createObjectURL(new Blob([buf], { type: "application/pdf" }));
+    render(true);
+    try { await ExamPdf.load(buf, "aurora"); } catch (err) { const sl = root.querySelector("#frame-slot"); if (sl) sl.innerHTML = "<p class=\"small\">Could not read this PDF. Try the Text 4 Insert file again.</p>"; }
+  }
+  function applyHL(scroll) {
+    const w = P.where[activeQ]; if (!w || !ExamPdf.hasDoc()) return;
+    ExamPdf.highlight([{ id: "cur", label: w.label, start: w.start, end: w.end, current: true }]);
+    if (scroll) ExamPdf.scrollTo("cur");
+  }
+  ExamPdf.onRendered(() => applyHL(true));
+  root.addEventListener("focusin", e => { const c = e.target.closest && e.target.closest(".exam-q"); if (c && c.id.startsWith("eq-")) { const id = c.id.slice(3); if (id !== activeQ) { activeQ = id; applyHL(true); } } });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && focus) { focus = false; render(true); } });
 
   P.modelSummary = "The Vikings believed that auroras were the breath of fighters who died fighting or Valkyries reclaiming the spirits of dead soldiers. They also thought it was light shining off the Valkyries’ armour. Cree Indians believe they are ghosts attempting to speak with the living while Algonquins believe they are a fire made by their creator. Swedish fishermen believe it is the reflection of enormous schools of herring nearby that signified luck and a large catch while the Finnish thought it was a fire fox darting.";
   render();
