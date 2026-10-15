@@ -28,7 +28,7 @@ const PdfStore = (() => {
   };
 })();
 
-const PdfView = (() => {
+function createPdfViewer() {
   let doc = null, root = null, zoom = 1, token = 0, index = null, docKey = null, lastWidth = 0, resizeTimer = null;
   const pages = [];
   const listeners = [];
@@ -274,4 +274,5 @@ const PdfView = (() => {
     setZoom: z => { zoom = Math.max(0.6, Math.min(2.2, z)); return render(); },
     getZoom: () => zoom
   };
-})();
+}
+const PdfView = createPdfViewer();
