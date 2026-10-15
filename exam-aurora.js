@@ -11,6 +11,11 @@ const EXAM_AURORA = (() => {
     return { max, points, errors: errors || [], score, note: note || "" };
   };
 
+  /* spelling-tolerant keyword check: finds the word even if it is slightly misspelt */
+  const lev = (a, b) => { const m = a.length, n = b.length; const d = Array.from({ length: m + 1 }, (_, i) => [i]); for (let j = 1; j <= n; j++) d[0][j] = j; for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[m][n]; };
+  const nearWord = (t, w) => { const tol = w.length >= 8 ? 2 : 1; return String(t || "").toLowerCase().match(/[a-z]+/g)?.find(x => x === w || (Math.abs(x.length - w.length) <= tol && lev(x, w) <= tol)) || ""; };
+  const spell = (t, w, errs) => { const f = nearWord(t, w); if (f && f !== w) errs.push(`Spelling: write “${w}” (you wrote “${f}”). Your idea is right, but this paper says spelling mistakes may be penalised, so check key words carefully.`); return !!f; };
+
   const questions = [
     {
       id: "q1", no: "1", marks: 1, tag: "C4", kind: "Literal · lift",
@@ -21,7 +26,7 @@ const EXAM_AURORA = (() => {
       mark(a) {
         const t = T(a);
         const errs = [];
-        const hasM = has(t, /mesmeri[sz]ing/i), hasD = has(t, /light\s+danc/i);
+        const hasM = spell(t, "mesmerising", errs) || has(t, /mesmeri[sz]ing/i), hasD = has(t, /light\s+danc/i);
         if (!hasM && !hasD && has(t, /aurora|northern lights|phenomenon/i)) errs.push("Official note: writing only “aurora” does not capture the idea of “mesmerising”.");
         return res(1, [pt("idea", "Lifts “mesmerising light dances”", hasM && hasD, "Copy the whole phrase from paragraph 1: the mesmerising light dances (across the night sky).")], errs);
       }
@@ -34,7 +39,7 @@ const EXAM_AURORA = (() => {
       why: "All three parts are needed: interaction + solar particles + Earth’s atmosphere.",
       mark(a) {
         const t = T(a);
-        const i = has(t, /interact/i), s = has(t, /solar\s+particle/i), e = has(t, /earth|atmosphere/i);
+        const i = has(t, /interact/i) || !!nearWord(t, "interaction"), s = has(t, /solar\s+particle/i), e = has(t, /earth|atmosphere/i);
         const errs = [];
         if ((s || e) && !i) errs.push("Official note: “solar particles” or “Earth’s atmosphere” alone is not accepted. The interaction between them is the important part.");
         const r = res(1, [
@@ -54,7 +59,7 @@ const EXAM_AURORA = (() => {
       why: "Both parts are required: Aurora AND Boreas.",
       mark(a) {
         const t = T(a).replace(/aurora\s+borealis/gi, " ");
-        const au = has(t, /aurora/i), bo = has(t, /boreas/i);
+        const au = has(t, /aurora/i), bo = has(t, /boreas/i) || !!nearWord(t, "boreas");
         const r = res(1, [
           pt("aurora", "Aurora (goddess of dawn)", au, "Add the first source of the name: Aurora, the Roman goddess of dawn."),
           pt("boreas", "Boreas (god of the north wind)", bo, "Add the second source of the name: Boreas, the Greek god of the north wind.")
@@ -215,5 +220,5 @@ const EXAM_AURORA = (() => {
   const where = { q1: w1(1), q2: w1(1), q3a: w1(2), q3b: w1(2), q4: w1(2), q5a: w1(7), q5b: w1(8), q6: w1(8),
     q7: { label: "¶4–6", text: "paragraphs 4–6", start: PARA[4].start, end: PARA[6].end } };
 
-  return { where, id: "aurora", title: "WA3 2024 · Y1 DHP · Text 4 (aurora)", total: 25, minutes: 50, questions, markSummary, summaryOpening: OPENING, version: "1.0.0" };
+  return { where, id: "aurora", title: "WA3 2024 · Y1 DHP · Text 4 (aurora)", total: 25, minutes: 50, questions, markSummary, summaryOpening: OPENING, version: "1.0.1" };
 })();
