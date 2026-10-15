@@ -231,6 +231,15 @@ const PdfView = (() => {
     return "";
   }
 
+  /* True if the normalised text appears inside the loaded PDF. */
+  function contains(text) {
+    if (!index) return true;
+    const n = normPhrase(text).replace(/ /g, "");
+    if (!n) return true;
+    if (!index.compact) index.compact = index.norm.replace(/ /g, "");
+    return index.compact.includes(n);
+  }
+
   function scrollTo(id) {
     const b = root.querySelector(`.hl-badge.start[data-id="${id}"]`);
     if (!b) return false;
@@ -260,7 +269,7 @@ const PdfView = (() => {
     hasDoc: () => !!doc,
     key: () => docKey,
     ready: () => !!index,
-    highlight, scrollTo, selectionInfo, longestRun,
+    highlight, scrollTo, selectionInfo, longestRun, contains,
     onRendered: fn => listeners.push(fn),
     setZoom: z => { zoom = Math.max(0.6, Math.min(2.2, z)); return render(); },
     getZoom: () => zoom
