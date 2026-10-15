@@ -310,6 +310,19 @@ function saveWords() {
   persist(); renderReader(); showToast("Saved. You will be asked to recall them tomorrow.");
 }
 
+function remarkIfStale(seg, d, key) {
+  const old = d.auto && d.auto[key];
+  if (!old || old.v === Marking.version || !seg.rubric) return;
+  const fresh = key === "A" ? Marking.markA(seg, d.gist) : key === "B" ? Marking.markB(seg, d.detail, d.detailWhy) : Marking.markC(seg, d.inference);
+  fresh.v = Marking.version;
+  fresh.prev = old.score;
+  d.auto[key] = fresh;
+  if (key === "A") { d.selfA = fresh.score ? "2" : "0"; d.rv.g = d.selfA; }
+  if (key === "B") { d.selfB = fresh.score ? "2" : (fresh.points[0].got || fresh.points[1].got) ? "1" : "0"; d.rv.d = d.selfB; }
+  if (key === "C") { d.selfC = fresh.points.map(p => p.got); d.rv.c = d.selfC.slice(); }
+  persistSoon();
+}
+
 function typeChip(seg, key) {
   const t = seg.tags && seg.tags[key];
   return t ? `<span class="type-chip">School question type: ${escapeHtml(t)}</span>` : "";
@@ -319,8 +332,9 @@ function markCard(res, heading, sub) {
   if (!res) return "";
   const pts = res.points.map(p => `<li class="${p.got ? "ok" : "no"}"><b>${p.got ? "✓" : "✗"}</b><span>${escapeHtml(p.desc)}${p.got ? "" : `<em>${escapeHtml(p.feedback)}</em>`}</span></li>`).join("");
   const errs = res.errors.length ? `<ul class="mark-errors">${res.errors.map(e => `<li>${escapeHtml(e)}</li>`).join("")}</ul>` : "";
+  const rem = res.prev !== undefined && res.prev !== res.score ? `<p class="mark-found">Re-marked with improved rules. Earlier estimate: ${res.prev} / ${res.max}.</p>` : "";
   const found = res.found && res.found.length ? `<p class="mark-found">Details I found: ${res.found.map(escapeHtml).join("; ")}</p>` : "";
-  return `<div class="mark-card"><div class="mark-top"><strong>${escapeHtml(heading)}: ${res.score} / ${res.max}</strong><span>${escapeHtml(sub || "Estimated from keywords. It can be wrong. Correct it with your own check below.")}</span></div><ul class="mark-points">${pts}</ul>${found}${errs}</div>`;
+  return `<div class="mark-card"><div class="mark-top"><strong>${escapeHtml(heading)}: ${res.score} / ${res.max}</strong><span>${escapeHtml(sub || "Estimated from keywords. It can be wrong. Correct it with your own check below.")}</span></div><ul class="mark-points">${pts}</ul>${found}${rem}${errs}</div>`;
 }
 
 function fixList(res) {
@@ -339,6 +353,7 @@ function renderStep(lesson, rs, seg, d, key) {
     if (key === "A") mine = lockedAnswer("Your answer", d.gist);
     if (key === "B") mine = lockedAnswer("Your answer", d.detail + (d.detailWhy ? "  —  " + d.detailWhy : ""));
     if (key === "C") mine = lockedAnswer("Your answer", d.inference);
+    remarkIfStale(seg, d, key);
     const res = d.auto && d.auto[key];
     return stepCard(key, meta.title, meta.meta, `${typeChip(seg, key)}${mine}${markCard(res, "First attempt")}${modelCard(lesson, rs, seg, key, modelId)}${key === "A" ? wordsCard(seg) : ""}${compareControls(key, d)}`, key === "C" ? "focus-card" : "");
   }
@@ -673,6 +688,7 @@ function checkStep(key) {
   if (!d.auto[key]) {
     d.auto[key] = key === "A" ? Marking.markA(seg, d.gist) : key === "B" ? Marking.markB(seg, d.detail, d.detailWhy) : Marking.markC(seg, d.inference);
     const a = d.auto[key];
+    a.v = Marking.version;
     if (key === "A") { d.selfA = a.score ? "2" : "0"; d.rv.g = d.selfA; }
     if (key === "B") { const rel = a.points[0].got, fn = a.points[1].got; d.selfB = a.score ? "2" : (rel || fn) ? "1" : "0"; d.rv.d = d.selfB; }
     if (key === "C") { d.selfC = a.points.map(p => p.got); d.rv.c = a.points.map(p => p.got); }

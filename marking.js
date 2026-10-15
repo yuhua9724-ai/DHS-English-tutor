@@ -89,5 +89,5 @@ const Marking = (() => {
     return { max: 3, score: points.filter(p => p.got).length, points, errors, found: found.map(f => f.label) };
   }
 
-  return { markA, markB, markC, words };
+  return { markA, markB, markC, words, version: "1.4.1" };
 })();
