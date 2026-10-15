@@ -13,7 +13,7 @@ const LANDLADY_SEGMENTS = [
     pages: "Page 1", start: "Billy Weaver", end: "more comfortable than The Bell and Dragon.",
     frame: "Billy seems ______. The ______ shows that ______. Also, the ______ suggests that ______.",
     gistPrompt: "In one complete sentence (about 20–35 words), explain what happens in this section.",
-    detailPrompt: "Identify one important detail from this section and explain why it matters (use your own words).",
+    detailPrompt: "Find ONE detail in this section that makes the house look welcoming. Copy the exact words from the text, then explain in your own words how it affects Billy.",
     inferencePrompt: "What impression do you get of Billy in this section? Support your answer with two details from the text and explain how each detail creates this impression.",
     rubric: {
       A: { minWords: 12, need: 2, core: R`window|notice|sign|bed and breakfast|b ?& ?b|stop(s|ped)?\b|closer|drawn|attract|fascinat|interest|inviting|peer|fire|dog|chrysanthemum|curtain|cosy|cozy|warm|welcoming|wants? to (look|stay|go in)`,
@@ -40,8 +40,8 @@ const LANDLADY_SEGMENTS = [
     },
     model: {
       gist: "Billy arrives in Bath on a cold evening, is looking for somewhere to stay, and becomes fascinated by a welcoming-looking bed-and-breakfast window.",
-      detail: "The warm fire, the pleasant furniture and the sleeping dog make the room look safe and comfortable.",
-      detailWhy: "This draws Billy closer to the window because the house looks much more inviting than the cold street.",
+      detail: "a bright fire burning in the hearth",
+      detailWhy: "It makes the room look warm and safe, so Billy feels the house is much more inviting than the cold street and wants to look closer.",
       parts: [
         ["Impression", "Billy seems young and easily influenced by appearances."],
         ["Detail 1 + link", "He sees the bright fire, the sleeping dog and the pleasant furniture and decides it would be “a pretty decent house”, which suggests that a cosy look is enough to reassure him."],
@@ -61,7 +61,7 @@ const LANDLADY_SEGMENTS = [
     pages: "Pages 1–2", start: "On the other hand, a pub", end: "reaching for the bell.",
     frame: "The writer makes readers feel ______ because “______” suggests ______. Also, “______” shows ______.",
     gistPrompt: "In one complete sentence (about 20–35 words), explain what Billy is unsure about and what happens in the end.",
-    detailPrompt: "Find the comparison the writer uses to show how the notice affects Billy. Quote the words, then explain what the comparison suggests (language use for impact).",
+    detailPrompt: "Find the comparison that shows how the notice affects Billy. Copy the exact words, then explain in your own words what it suggests about the notice's power over him.",
     inferencePrompt: "What feeling does the writer create about the house in this section? Support your answer with two details and explain how each detail creates that feeling.",
     rubric: {
       A: { minWords: 12, need: 2, core: R`notice|sign|words|bell|door|steps|compel|hold|held|pull|forc|drawn|resist`,
@@ -84,8 +84,8 @@ const LANDLADY_SEGMENTS = [
     },
     model: {
       gist: "Billy is unsure whether to stay here or go to the pub, but the notice seems to hold him and he finds himself climbing the steps to ring the bell.",
-      detail: "The writer compares each word of the notice to “a large black eye staring at him”.",
-      detailWhy: "This suggests the notice is watching Billy and has power over him, so he cannot walk away by his own choice.",
+      detail: "Each word was like a large black eye staring at him",
+      detailWhy: "It suggests the notice is watching him and has power over him, so he cannot walk away by his own choice.",
       parts: [
         ["Feeling", "The writer makes readers feel uneasy about the house."],
         ["Detail 1 + link", "The notice is compared to “a large black eye staring at him”, which suggests that something is watching him and he is not in control."],
@@ -101,7 +101,7 @@ const LANDLADY_SEGMENTS = [
     pages: "Pages 2–3", start: "He pressed the bell.", end: "stepped over the threshold.",
     frame: "I get the impression that the landlady is ______. The text says “______”, which suggests ______. Also, “______” shows ______.",
     gistPrompt: "In one complete sentence (about 20–35 words), explain what happens when Billy rings the bell.",
-    detailPrompt: "Choose ONE detail that shows how the landlady behaves or looks. Say what it is, then explain what it suggests about her.",
+    detailPrompt: "Find ONE detail that shows the landlady is very eager or welcoming. Copy the exact words, then explain in your own words what it suggests about her.",
     inferencePrompt: "What impression do you get of the landlady in this section? Support your answer with two details and explain how each detail creates that impression.",
     rubric: {
       A: { minWords: 12, need: 3, core: R`landlady|woman|lady|she`,
@@ -124,8 +124,8 @@ const LANDLADY_SEGMENTS = [
     },
     model: {
       gist: "Billy rings the bell and the landlady opens the door at once, welcomes him warmly, offers a very cheap price, and he steps inside.",
-      detail: "The door opened before Billy had even taken his finger off the bell.",
-      detailWhy: "This suggests she was waiting for a guest and is unusually eager.",
+      detail: "the door swung open and a woman was standing there",
+      detailWhy: "The door opened the moment he rang, which suggests she was waiting close by and is unusually eager for a guest.",
       parts: [
         ["Impression", "The landlady seems welcoming but a little too eager."],
         ["Detail 1 + link", "The door opened at once, “like a jack-in-the-box”, which suggests she had been waiting close by for someone to arrive."],
@@ -141,7 +141,7 @@ const LANDLADY_SEGMENTS = [
     pages: "Pages 3–4", start: "Just hang it there", end: "closed the door.",
     frame: "The writer wants readers to suspect ______. The text says “______”, which suggests ______. Also, “______” shows ______.",
     gistPrompt: "In one complete sentence (about 20–35 words), explain what the landlady does and says as she takes Billy to his room.",
-    detailPrompt: "Look at how the writer describes the landlady looking at Billy, or how the house is prepared. Quote the words, then explain what they suggest (language use for impact).",
+    detailPrompt: "Find ONE detail that shows how the landlady looks at Billy, or how she has prepared for him. Copy the exact words, then explain in your own words what it suggests.",
     inferencePrompt: "What does the writer want readers to suspect about the landlady or the house in this section? Support your answer with two details and explain how each detail creates the suspicion.",
     rubric: {
       A: { minWords: 12, need: 2, core: R`landlady|woman|she|her`,
@@ -165,8 +165,8 @@ const LANDLADY_SEGMENTS = [
     },
     model: {
       gist: "The landlady takes Billy upstairs, tells him they have the house to themselves, says she is choosy, and leaves him in a room that is already prepared.",
-      detail: "Her blue eyes “travelled slowly all the way down the length of Billy's body”.",
-      detailWhy: "This suggests she is examining him like something she is judging, which is unsettling rather than motherly.",
+      detail: "her blue eyes travelled slowly all the way down the length of Billy's body",
+      detailWhy: "It suggests she is examining him like something she is judging, which is unsettling rather than motherly.",
       parts: [
         ["Suspicion", "The writer wants readers to suspect that the landlady has been waiting for a particular kind of guest."],
         ["Detail 1 + link", "There are no other hats or coats in the hall and she says “we have it all to ourselves”, which suggests the house has no other guests."],
@@ -181,7 +181,7 @@ const LANDLADY_SEGMENTS = [
     covers: "Billy decides she is harmless, feels lucky, signs the guest book and notices two familiar-sounding names from over two years ago.",
     pages: "Pages 4–5", start: "Now, the fact that his landlady", end: "Churchill and Roosevelt",
     gistPrompt: "In one complete sentence (about 20–35 words), explain what Billy decides about the landlady and what he notices in the guest book.",
-    detailPrompt: "Choose ONE detail about the guest book that should make a careful reader suspicious. Say what it is and why it matters.",
+    detailPrompt: "Find ONE detail about the guest book that should make a careful reader suspicious. Copy the exact words, then explain in your own words why it is suspicious.",
     inferencePrompt: "What does this section show about Billy's judgement? Support your answer with two details and explain how each detail shows it.",
     rubric: {
       A: { minWords: 12, need: 2, core: R`guest.?book|names?|sign`,
@@ -204,8 +204,8 @@ const LANDLADY_SEGMENTS = [
     },
     model: {
       gist: "Billy decides the landlady is harmless, signs the guest book, and notices two other names that seem strangely familiar although the entries are over two years old.",
-      detail: "There are only two other names in the guest book, and the latest was written over two years ago.",
-      detailWhy: "This suggests the house has had almost no guests for a long time, which makes readers wonder what happened to them.",
+      detail: "This last entry is over two years old",
+      detailWhy: "It suggests the house has had almost no guests for a long time, which makes readers wonder what happened to the others.",
       parts: [
         ["Judgement", "Billy is naive and trusts the landlady too easily."],
         ["Detail 1 + link", "He decides she is “harmless” and “a kind and generous soul” even though she seems “slightly dotty”, which shows he ignores the warning signs."],
@@ -220,7 +220,7 @@ const LANDLADY_SEGMENTS = [
     covers: "Over tea, the landlady speaks warmly of the two young men, then says they never left and are still on the third floor.",
     pages: "Pages 5–6", start: "How amusing", end: "baby’s",
     gistPrompt: "In one complete sentence (about 20–35 words), explain what the landlady reveals about the two young men.",
-    detailPrompt: "Look at the smell Billy notices coming from the landlady. Quote the things it reminds him of, then explain what they suggest (language use for impact).",
+    detailPrompt: "Find the smells Billy notices coming from the landlady. Copy the exact words, then explain in your own words what they suggest.",
     inferencePrompt: "What does the way the landlady talks about Mr Mulholland and Mr Temple suggest to the reader? Support your answer with two details and explain how each detail leads to your answer.",
     rubric: {
       A: { minWords: 12, need: 2, core: R`landlady|she|woman|mulholland|temple|names|boys|young men`,
@@ -243,7 +243,7 @@ const LANDLADY_SEGMENTS = [
     },
     model: {
       gist: "Billy tries to remember the two names, and the landlady calmly reveals that both young men never left and are still upstairs on the third floor.",
-      detail: "Billy smells something that reminds him of pickled walnuts, new leather or the corridors of a hospital.",
+      detail: "Pickled walnuts? New leather? Or was it the corridors of a hospital?",
       detailWhy: "These are smells of preserving and chemicals, which suggests that something is being kept unnaturally and hints at danger.",
       parts: [
         ["Suggestion", "The landlady's words suggest she has harmed the young men and is obsessed with young, handsome guests."],
@@ -259,7 +259,7 @@ const LANDLADY_SEGMENTS = [
     covers: "Billy realises the parrot and the dog are stuffed. The tea tastes of bitter almonds and the landlady says he is her only guest in years.",
     pages: "Pages 6–7", start: "That parrot", end: "Only you.",
     gistPrompt: "In one complete sentence (about 20–35 words), explain what Billy discovers and what the landlady says at the end.",
-    detailPrompt: "Choose ONE thing the landlady says or does that sounds calm or ordinary but is actually disturbing. Say what it is, then explain why it is disturbing.",
+    detailPrompt: "Find ONE thing the landlady says that sounds calm or ordinary but is actually disturbing. Copy the exact words, then explain in your own words why it is disturbing.",
     inferencePrompt: "What does the ending suggest will happen to Billy? Support your answer with two details and explain how each detail leads to your answer.",
     rubric: {
       A: { minWords: 12, need: 2, core: R`stuffed|preserv|dead|only you|guests?|parrot|dog|dachshund|taxiderm|tea`,
@@ -280,8 +280,8 @@ const LANDLADY_SEGMENTS = [
     },
     model: {
       gist: "Billy discovers that the parrot and the dog are stuffed, the tea tastes of bitter almonds, and the landlady tells him he is her only guest in years.",
-      detail: "The landlady says “Not in the least” when Billy asks if stuffing the animals is difficult.",
-      detailWhy: "It is disturbing because she talks about death as if it were ordinary, which suggests she is calm about preserving living things.",
+      detail: "Not in the least",
+      detailWhy: "She says this about stuffing animals as if it were nothing, which shows she treats death as ordinary and makes her frightening.",
       parts: [
         ["Prediction", "The ending suggests that Billy will be poisoned and stuffed like the guests before him."],
         ["Detail 1 + link", "She says “I stuff all my little pets myself”, which suggests she may treat people the same way."],
