@@ -16,11 +16,11 @@ const LANDLADY_SEGMENTS = [
     detailPrompt: "Identify one important detail from this section and explain why it matters (use your own words).",
     inferencePrompt: "What impression do you get of Billy in this section? Support your answer with two details from the text and explain how each detail creates this impression.",
     rubric: {
-      A: { minWords: 12, need: 2, core: R`window|notice|bed and breakfast|b ?& ?b|house|stops?|closer|lodging|hotel|stay`,
+      A: { minWords: 12, need: 2, core: R`window|notice|bed and breakfast|b ?& ?b|stop(s|ped)?\b|closer|drawn|attract|fascinat|peer|fire|dog|chrysanthemum|curtain|cosy|cozy|welcoming`,
         groups: [R`billy`, R`arriv|train|bath|london|travel|came|walk`, R`window|notice|bed and breakfast|b ?& ?b|house|stop|closer|attract|fascinat|stay|room|lodging|hotel|look`],
         outOfRange: R`landlady|woman|door (opens|opened|swung)|\btea\b|guest.?book|stuffed`,
         outOfRangeMsg: "You included information that appears later in the story (for example, the landlady opening the door). Stay only within this section.",
-        missing: "You missed the key point: Billy is drawn to the BED AND BREAKFAST house and stops to look." },
+        missing: "Your sentence stops too early. Add what Billy finds and does at the END of this section: he sees the BED AND BREAKFAST notice and the cosy room, and is drawn to it." },
       B: { relevant: R`fire|hearth|dog|dachshund|furniture|sofa|armchair|piano|curtain|chrysanthemum|notice|bed and breakfast|warm|comfortable|pleasant|cosy|cozy|parrot|animals`,
         function: R`show|suggest|because|so|make|mean|attract|draw|safe|welcom|inviting|comfort|decid`,
         irrelevant: "This detail is not the most important one. Look for what makes Billy stop and want to stay." },
@@ -64,7 +64,7 @@ const LANDLADY_SEGMENTS = [
     detailPrompt: "Find the comparison the writer uses to show how the notice affects Billy. Quote the words, then explain what the comparison suggests (language use for impact).",
     inferencePrompt: "What feeling does the writer create about the house in this section? Support your answer with two details and explain how each detail creates that feeling.",
     rubric: {
-      A: { minWords: 12, need: 2, core: R`notice|sign|words|bell|door|steps|pub|bell and dragon`,
+      A: { minWords: 12, need: 2, core: R`notice|sign|words|bell|door|steps|compel|hold|held|pull|forc|drawn|resist`,
         groups: [R`pub|bell and dragon|hesitat|dither|unsure|torn|not sure|decid|choos|mind|frighten|afraid`, R`notice|sign|bed and breakfast|words|eye`, R`compel|hold|held|pull|forc|drawn|attract|stare|resist|bell|door|steps|climb`],
         outOfRange: R`landlady|woman|door (opens|opened|swung)|\btea\b|guest.?book`,
         missing: "You missed the key point: Billy is unsure, but the notice seems to pull him to the door and he rings the bell." },
