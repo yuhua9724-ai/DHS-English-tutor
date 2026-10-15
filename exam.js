@@ -9,6 +9,12 @@
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch { /* ignore */ } };
   const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const wcount = t => (String(t || "").match(/\S+/g) || []).length;
+  /* when the marking rules improve, silently re-mark stored answers from their saved text */
+  Object.keys(st.aurora.q).forEach(id => {
+    const q = (P.questions.concat([{ id: "q7" }])).find(x => x.id === id), r = st.aurora.q[id];
+    ["first", "retry"].forEach(k => { if (q && r[k] && r[k].v !== RULES) { const nr = id === "q7" ? P.markSummary(r[k].text) : q.mark(r[k].text); if (id === "q7") nr.wc = (r[k].text.match(/\S+/g) || []).length; r[k].r = nr; r[k].v = RULES; } });
+  });
+  save();
   const rec = id => (st.aurora.q[id] = st.aurora.q[id] || {});
   const ExamPdf = createPdfViewer();
   const pdfRoot = document.createElement("div"); pdfRoot.className = "pdf-container";
@@ -144,10 +150,20 @@
     render(true);
     try { await ExamPdf.load(buf, "aurora"); } catch (err) { const sl = root.querySelector("#frame-slot"); if (sl) sl.innerHTML = "<p class=\"small\">Could not read this PDF. Try the Text 4 Insert file again.</p>"; }
   }
+  function note(msg) {
+    let n = document.querySelector("#exam-note");
+    if (!n) { n = document.createElement("div"); n.id = "exam-note"; n.className = "exam-note"; (root.querySelector(".exam-pdfwrap") || root).prepend(n); }
+    n.textContent = msg; n.style.display = msg ? "block" : "none";
+  }
   function applyHL(scroll) {
-    const w = P.where[activeQ]; if (!w || !ExamPdf.hasDoc()) return;
-    ExamPdf.highlight([{ id: "cur", label: w.label, start: w.start, end: w.end, current: true }]);
-    if (scroll) ExamPdf.scrollTo("cur");
+    const w = P.where[activeQ];
+    if (!w) return;
+    if (!ExamPdf.hasDoc()) { if (scroll) note("Load the Text 4 Insert PDF first (button “Load the Insert PDF”)."); return; }
+    const st2 = ExamPdf.highlight([{ id: "cur", label: w.label, start: w.start, end: w.end, current: true }]);
+    const s1 = st2.cur;
+    if (s1 === "ok") { note(""); if (scroll) ExamPdf.scrollTo("cur"); }
+    else if (s1 === "no-index") { note("The PDF is still loading. Try again in a moment."); }
+    else { note("This PDF does not contain " + w.text + ". It looks like the wrong file: please load the Text 4 Insert (cover says “PAPER 2 (Text 4)”)."); }
   }
   ExamPdf.onRendered(() => applyHL(true));
   root.addEventListener("focusin", e => { const c = e.target.closest && e.target.closest(".exam-q"); if (c && c.id.startsWith("eq-")) { const id = c.id.slice(3); if (id !== activeQ) { activeQ = id; applyHL(true); } } });
