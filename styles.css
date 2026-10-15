@@ -517,3 +517,4 @@ body.focus-mode .text-pane .material-viewer { height: auto; min-height: 0; }
 .recall-in { display: flex; gap: 8px; }
 .recall-in input { flex: 1; padding: 8px 10px; border: 1px solid #d9d2bf; border-radius: 8px; font: inherit; }
 .rc-ok { color: #1f7a4a; } .rc-no { color: #b3402a; } .rc-say { color: #6b6b5e; font-size: 0.85rem; }
+.q-line { font-weight: 600; margin: 0 0 10px; line-height: 1.45; }
