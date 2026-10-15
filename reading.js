@@ -10,7 +10,7 @@ const FINAL_RANGE = [80, 120];
 
 const STEP_META = {
   A: { title: "Section gist", meta: "1 sentence · literal comprehension" },
-  B: { title: "Key detail", meta: "own words · evidence selection" },
+  B: { title: "Key detail", meta: "copy the words · explain in your own words" },
   C: { title: "Inference", meta: "3 marks · inference + reasoning link" }
 };
 
@@ -366,9 +366,10 @@ function renderStep(lesson, rs, seg, d, key) {
       <textarea id="f-gist" data-field="gist" rows="3" placeholder="${full ? "Who + did what + why or where." : "Write one complete sentence."}">${escapeHtml(d.gist)}</textarea>
       ${counterHtml("gist", d.gist, GIST_RANGE)}`;
   } else if (key === "B") {
-    body = `${early}<label for="f-detail">${escapeHtml(seg.detailPrompt)}</label>
-      <textarea id="f-detail" data-field="detail" rows="2" placeholder="${full ? "The detail is “…”" : "The detail is…"}">${escapeHtml(d.detail)}</textarea>
-      <label for="f-detailWhy" class="sub-label">What does it show, or why does it matter?</label>
+    body = `${early}<p class="q-line">${escapeHtml(seg.detailPrompt)}</p>
+      <label for="f-detail" class="sub-label">1. Copy the exact words from the text</label>
+      <textarea id="f-detail" data-field="detail" rows="2" placeholder="“…”">${escapeHtml(d.detail)}</textarea>
+      <label for="f-detailWhy" class="sub-label">2. What does it show? Explain in your own words</label>
       <textarea id="f-detailWhy" data-field="detailWhy" rows="2" placeholder="${full ? "This shows … because …" : "This shows…"}">${escapeHtml(d.detailWhy)}</textarea>`;
   } else {
     const frameText = seg.frame || "I get the impression that ______ because the text says “______”. This suggests ______. Also, “______” shows ______.";
