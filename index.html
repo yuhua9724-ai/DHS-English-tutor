@@ -14,16 +14,17 @@
           <div class="brand-mark" aria-hidden="true">D</div>
           <div>
             <strong>DHS English Studio</strong>
-            <span>Private tutor · v1.3</span>
+            <span>Private tutor · v1.4</span>
           </div>
         </div>
 
         <nav class="nav-list">
           <button class="nav-item active" data-view="today"><span>01</span>Today</button>
           <button class="nav-item" data-view="reading"><span>02</span>Reading Room</button>
-          <button class="nav-item" data-view="practice"><span>03</span>School Practice</button>
-          <button class="nav-item" data-view="progress"><span>04</span>Progress</button>
-          <button class="nav-item" data-view="sources"><span>05</span>Source Library</button>
+          <button class="nav-item" data-view="exam"><span>03</span>Exam Papers</button>
+          <button class="nav-item" data-view="practice"><span>04</span>School Practice</button>
+          <button class="nav-item" data-view="progress"><span>05</span>Progress</button>
+          <button class="nav-item" data-view="sources"><span>06</span>Source Library</button>
         </nav>
 
         <div class="privacy-note">
@@ -132,6 +133,10 @@
               <section class="task-pane" id="task-pane" aria-live="polite"></section>
             </div>
           </div>
+        </section>
+
+        <section class="view" id="view-exam">
+          <div id="exam-root"></div>
         </section>
 
         <section class="view" id="view-practice">
@@ -255,6 +260,8 @@
     <script src="marking.js"></script>
     <script src="lesson-landlady.js"></script>
     <script src="reading.js"></script>
+    <script src="exam-aurora.js"></script>
+    <script src="exam.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

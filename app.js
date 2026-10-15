@@ -38,6 +38,7 @@ let timerId = null;
 const pageMeta = {
   today: ["Wednesday · 14 October 2026", "Today’s learning path"],
   reading: ["Actual text · guided reading", "DHS reading room"],
+  exam: ["Real papers · attempt first", "Exam papers"],
   practice: ["School materials · attempt first", "School practice lab"],
   progress: ["Evidence, not impressions", "Learning progress"],
   sources: ["Provenance and inspection", "Source library"]
