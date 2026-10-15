@@ -518,3 +518,33 @@ body.focus-mode .text-pane .material-viewer { height: auto; min-height: 0; }
 .recall-in input { flex: 1; padding: 8px 10px; border: 1px solid #d9d2bf; border-radius: 8px; font: inherit; }
 .rc-ok { color: #1f7a4a; } .rc-no { color: #b3402a; } .rc-say { color: #6b6b5e; font-size: 0.85rem; }
 .q-line { font-weight: 600; margin: 0 0 10px; line-height: 1.45; }
+
+/* Exam Papers */
+.exam-head { display: flex; justify-content: space-between; gap: 16px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+.exam-head h2 { margin: 4px 0; font: 600 24px Georgia, serif; }
+.exam-tools { display: flex; align-items: center; gap: 10px; }
+.timer { font: 700 22px/1 ui-monospace, monospace; color: var(--ink); }
+.exam-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.exam-left { position: sticky; top: 12px; }
+.exam-frame { width: 100%; height: 78vh; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.exam-right { display: grid; gap: 16px; }
+.exam-q textarea { width: 100%; box-sizing: border-box; font: inherit; padding: 10px; border: 1px solid var(--line); border-radius: 10px; }
+.exam-q .q-stem { font-size: 1.02rem; line-height: 1.5; margin: 6px 0 10px; }
+.exam-q .marks-chip { font-weight: 700; color: var(--ink); }
+.exam-q .strategy { margin: 0 0 10px; font-size: .9rem; }
+.exam-q .opening { margin: 0 0 6px; }
+.exam-q .your { background: #f7f3e8; border-radius: 10px; padding: 10px 12px; }
+.pts { list-style: none; padding: 0; margin: 8px 0; }
+.pts li { margin: 6px 0; }
+.pts li.ok b { color: #2f7d4f; } .pts li.no b { color: var(--coral-dark); }
+.pts .why { font-size: .88rem; color: #6a5a2a; margin: 2px 0 0 20px; }
+.mark-card .big { font-size: 1.2rem; }
+.mark-card .est { font-size: .75rem; color: var(--muted); margin: 6px 0 0; }
+.model-card { background: #eef5ef; border-radius: 12px; padding: 10px 14px; margin: 10px 0; }
+.model-card h4, .retry-card h4 { margin: 0 0 4px; }
+.model-card .small { font-size: .85rem; color: #4a5a50; }
+.retry-card { border: 1px dashed var(--coral); border-radius: 12px; padding: 12px; margin: 12px 0; }
+.lang-box { margin-top: 10px; } .lang-box input { width: 64px; }
+.wc.over { color: var(--coral-dark); font-weight: 700; }
+@media (max-width: 900px) { .exam-split { grid-template-columns: 1fr; } .exam-left { position: static; } .exam-frame { height: 60vh; } }
+.where-line { background: #eef3fb; border-left: 4px solid #5b7bb8; border-radius: 8px; padding: 8px 10px; margin: 0 0 10px; font-size: .88rem; line-height: 1.4; }
