@@ -1,3 +1,4 @@
+
 /* DHS English Studio — Exam Papers: real school papers, marked against the official answer key.
    First attempt is locked and kept; the rewrite is compared with it. Records stay in this browser. */
 (() => {
@@ -10,7 +11,7 @@
   const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const wcount = t => (String(t || "").match(/\S+/g) || []).length;
   const rec = id => (st.aurora.q[id] = st.aurora.q[id] || {});
-  let pdfUrl = null, timer = null, left = P.minutes * 60;
+  let wide = false, pdfUrl = null, timer = null, left = P.minutes * 60;
 
   const allQs = P.questions.concat([{ id: "q7", no: "7", marks: 15, tag: "", kind: "Summary · paragraphs 4–6" }]);
   const run = (q, text) => q.id === "q7" ? P.markSummary(text) : q.mark(text);
@@ -67,13 +68,13 @@
   const fmtTime = s => `${String(Math.floor(Math.abs(s) / 60)).padStart(2, "0")}:${String(Math.abs(s) % 60).padStart(2, "0")}${s < 0 ? " over" : ""}`;
 
   function pdfPane() {
-    return `<div class="panel exam-pdf"><div class="panel-head"><div><p class="eyebrow">THE PASSAGE (INSERT)</p></div><label class="import-btn">${pdfUrl ? "Replace insert PDF" : "Load the Insert PDF"}<input id="exam-pdf-file" type="file" accept="application/pdf"></label></div>${pdfUrl ? `<iframe class="exam-frame" src="${pdfUrl}" title="Text 4 insert"></iframe>` : `<p class="small">Choose the school’s Text 4 Insert PDF from your own device. It stays in this browser only; it is not uploaded to the website.</p>`}</div>`;
+    return `<div class="panel exam-pdf"><div class="panel-head"><div><p class="eyebrow">THE PASSAGE (INSERT)</p></div><div class="pdf-tools">${pdfUrl ? `<a class="small-btn" href="${pdfUrl}" target="_blank" rel="noopener">Open in new tab ↗</a><button type="button" class="small-btn" data-act="wide">${wide ? "Normal view" : "Wide view"}</button>` : ""}<label class="import-btn">${pdfUrl ? "Replace insert PDF" : "Load the Insert PDF"}<input id="exam-pdf-file" type="file" accept="application/pdf"></label></div></div>${pdfUrl ? `<iframe class="exam-frame" src="${pdfUrl}" title="Text 4 insert"></iframe>` : `<p class="small">Choose the school’s Text 4 Insert PDF from your own device. It stays in this browser only; it is not uploaded to the website.</p>`}</div>`;
   }
 
   function render(keepScroll) {
     const y = window.scrollY;
     const active = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.q : null;
-    root.innerHTML = paperBar() + `<div class="exam-split"><div class="exam-left">${pdfPane()}</div><div class="exam-right">${allQs.map(questionCard).join("")}<div class="panel"><button class="text-btn" data-act="reset">Clear this paper’s answers</button></div></div></div>`;
+    root.innerHTML = paperBar() + `<div class="exam-split${wide ? " wide" : ""}"><div class="exam-left">${pdfPane()}</div><div class="exam-right">${allQs.map(questionCard).join("")}<div class="panel"><button class="text-btn" data-act="reset">Clear this paper’s answers</button></div></div></div>`;
     root.querySelectorAll("textarea").forEach(ta => ta.addEventListener("input", () => { const w = wcount(ta.value); const el = root.querySelector(ta.dataset.retry ? "#wc-q7r" : "#wc-q7"); if (el) { el.textContent = w; el.classList.toggle("over", w > 80); } }));
     root.querySelectorAll("textarea[data-retry]").forEach(ta => ta.dispatchEvent(new Event("input")));
     const li = root.querySelector("#lang-in");
@@ -96,6 +97,7 @@
     } else if (act === "timer") {
       if (timer) { clearInterval(timer); timer = null; } else { timer = setInterval(() => { left--; const el = root.querySelector("#exam-timer"); if (el) el.textContent = fmtTime(left); }, 1000); }
       render(true);
+    } else if (act === "wide") { wide = !wide; render(true);
     } else if (act === "reset") {
       if (confirm("Clear all answers and scores for this paper? This cannot be undone.")) { st.aurora = { q: {}, lang: null }; save(); render(); }
     }
