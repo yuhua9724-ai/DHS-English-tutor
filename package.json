@@ -1,0 +1,9 @@
+{
+  "name": "dhs-english-tutor",
+  "version": "1.3.0",
+  "private": true,
+  "description": "DHS English Studio – evidence-led Year 1 English tutor",
+  "scripts": {
+    "start": "npx serve ."
+  }
+}

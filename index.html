@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A private, evidence-led DHS Year 1 English tutor." />
+    <title>DHS English Studio</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Primary navigation">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">D</div>
+          <div>
+            <strong>DHS English Studio</strong>
+            <span>Private tutor · v1.3</span>
+          </div>
+        </div>
+
+        <nav class="nav-list">
+          <button class="nav-item active" data-view="today"><span>01</span>Today</button>
+          <button class="nav-item" data-view="reading"><span>02</span>Reading Room</button>
+          <button class="nav-item" data-view="practice"><span>03</span>School Practice</button>
+          <button class="nav-item" data-view="progress"><span>04</span>Progress</button>
+          <button class="nav-item" data-view="sources"><span>05</span>Source Library</button>
+        </nav>
+
+        <div class="privacy-note">
+          <div class="status-dot"></div>
+          <div><strong>Local-first</strong><br /><span>Learning records stay in this browser.</span></div>
+        </div>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <button class="mobile-menu" aria-label="Toggle navigation">☰</button>
+          <div>
+            <p class="eyebrow" id="page-eyebrow">Wednesday · 14 October 2026</p>
+            <h1 id="page-title">Today’s learning path</h1>
+          </div>
+          <div class="target-chip"><span>Target</span><strong>75–80%</strong></div>
+        </header>
+
+        <section class="view active" id="view-today">
+          <div class="hero-grid">
+            <article class="hero-card ink-card">
+              <div>
+                <p class="card-kicker">CURRENT POSITION</p>
+                <h2>From 60% to precise, independent reading.</h2>
+                <p>Your next gain will come from identifying where information breaks: decoding, organising, inferring, selecting evidence, or expressing the answer.</p>
+              </div>
+              <div class="score-arc" role="img" aria-label="Current score 60 percent, target 75 to 80 percent">
+                <div class="score-inner"><strong>60%</strong><span>EOY P2 baseline</span></div>
+              </div>
+            </article>
+
+            <article class="hero-card paper-card">
+              <div class="mini-label">TODAY · SCHOOL READING</div>
+              <h3>Read the actual text</h3>
+              <p class="lesson-source"><em>The Landlady</em> · DHS Classroom PDF</p>
+              <div class="objective" id="today-objective">Read one short section, then answer three small steps: gist, key detail, inference.</div>
+              <button class="primary-btn" data-go="reading" id="today-reading-btn">Begin guided reading <span>→</span></button>
+            </article>
+          </div>
+
+          <div class="section-heading">
+            <div><p class="eyebrow">THE LEARNING LOOP</p><h2>One skill. One attempt. One better retry.</h2></div>
+          </div>
+
+          <div class="loop-grid">
+            <article><span>01</span><h3>Attempt</h3><p>The student answers before hints or models appear.</p></article>
+            <article><span>02</span><h3>Diagnose</h3><p>Locate the break in information processing, not just the wrong answer.</p></article>
+            <article><span>03</span><h3>Retry</h3><p>Use the smallest useful hint, then revise independently.</p></article>
+            <article><span>04</span><h3>Transfer</h3><p>Recheck the same skill later in an unfamiliar text.</p></article>
+          </div>
+
+          <div class="two-column">
+            <article class="panel">
+              <div class="panel-head"><h3>Next reviews</h3><span class="count-pill" id="review-count">0</span></div>
+              <div id="today-review-list" class="review-list"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-head"><h3>Parent snapshot</h3><span>Evidence only</span></div>
+              <p id="parent-snapshot" class="snapshot-text">Paper 2 baseline is 60%. Question-level evidence is still needed before a reliable weakness diagnosis.</p>
+              <button class="text-btn" data-go="progress">View evidence log →</button>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="view-reading">
+          <div class="reader" id="reader">
+            <header class="reader-bar panel">
+              <div class="reader-id">
+                <p class="card-kicker">GUIDED READING · DHS SCHOOL READER</p>
+                <h2 id="reading-source-title"><em>The Landlady</em></h2>
+                <p id="reading-source-subtitle" class="reader-sub">Reading Material for Narrative</p>
+              </div>
+              <ol class="seg-pills" id="seg-pills" aria-label="Reading sections"></ol>
+              <div class="reader-tools">
+                <div class="timer-mini"><span>TIMER</span><strong id="timer-display">18:00</strong><button id="timer-toggle" class="small-btn" type="button">Start</button></div>
+                <button id="toggle-text" class="small-btn tool-btn" type="button" aria-pressed="false">Hide text</button>
+                <button id="toggle-focus" class="small-btn tool-btn" type="button" aria-pressed="false">Focus mode</button>
+              </div>
+            </header>
+
+            <div class="reader-grid" id="reader-grid">
+              <section class="text-pane panel" id="text-pane" aria-label="Reading text">
+                <div class="pane-toolbar">
+                  <select id="reading-material-select" aria-label="School material">
+                    <option value="landlady">The Landlady · PDF + audio</option>
+                    <option value="narrative-notes">Narrative Comprehension Package · 26 slides</option>
+                    <option value="erp">Y1 ERP 2026 Briefing · slides</option>
+                  </select>
+                  <a id="reading-open-source" class="small-link" href="https://drive.google.com/file/d/1IvySYl68-X-qyI3OAS03C-VG0VbNbEQj/view?usp=classroom_web&authuser=0" target="_blank" rel="noopener">Open original ↗</a>
+                  <label class="import-btn small-import"><span id="reading-file-text">Load school PDF</span><input id="reading-local-file" type="file" accept="application/pdf,image/*,.txt,.md,text/plain" /></label>
+                  <button id="pdf-remove" class="small-btn hidden" type="button" data-act="remove-pdf">Remove PDF</button>
+                  <span id="zoom-ctl" class="zoom-ctl hidden"><button type="button" class="small-btn" data-act="zoom-out" aria-label="Zoom out">−</button><span id="zoom-label">100%</span><button type="button" class="small-btn" data-act="zoom-in" aria-label="Zoom in">+</button></span>
+                </div>
+                <div id="pdf-banner" class="pdf-banner">To highlight each section in the text, press <b>Load school PDF</b> and choose The Landlady PDF from your computer (download it from Google Classroom first). It stays in this browser only; nothing is uploaded.</div>
+                <div class="material-viewer" id="reading-viewer" data-mode="frame">
+                  <iframe id="reading-material-frame" title="The Landlady school reading material" src="https://drive.google.com/file/d/1IvySYl68-X-qyI3OAS03C-VG0VbNbEQj/preview?authuser=0" allow="autoplay" loading="eager"></iframe>
+                  <img id="reading-material-image" class="hidden" alt="Selected reading material" />
+                  <pre id="reading-material-text" class="hidden"></pre>
+                  <div id="pdf-container" class="pdf-container hidden" aria-label="PDF text"></div>
+                </div>
+                <p id="reading-source-note" class="field-help"><strong>Source:</strong> 1A ENGLISH → Narrative Writing → The Landlady. Teacher-posted PDF; access requires the school Google account (tan.jinghi@dhs.edu.sg).</p>
+              </section>
+
+              <div class="splitter" id="splitter" role="separator" aria-orientation="vertical" aria-label="Drag to resize the text and the questions. Double-click to reset." tabindex="0" title="Drag to resize · double-click to reset"><span></span></div>
+
+              <section class="task-pane" id="task-pane" aria-live="polite"></section>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="view-practice">
+          <div class="section-heading compact">
+            <div><p class="eyebrow">EXAM PRACTICE</p><h2>Turn text into a mark-winning answer.</h2></div>
+            <span class="source-badge">School materials first</span>
+          </div>
+
+          <article class="panel practice-material-panel">
+            <div class="panel-head">
+              <div><p class="eyebrow">MATERIAL READER</p><h2>Read the source and question here.</h2></div>
+              <a id="practice-open-source" class="text-btn" href="https://drive.google.com/file/d/1u3Ihox-nR3bZhYA3tR0mD-Ep03KPD5ED/view?usp=classroom_web&authuser=0" target="_blank" rel="noopener">Open original ↗</a>
+            </div>
+            <div class="material-toolbar">
+              <div>
+                <label for="practice-material-select">Classroom material</label>
+                <select id="practice-material-select">
+                  <option value="narrative-notes" selected>Narrative Comprehension Package · notes</option>
+                  <option value="narrative-answers">Narrative Comprehension Practice 1–3 Answers</option>
+                  <option value="landlady">The Landlady · reading PDF</option>
+                </select>
+              </div>
+              <label class="import-btn">Load your practice file<input id="practice-local-file" type="file" accept="application/pdf,image/*,.txt,.md,text/plain" /></label>
+            </div>
+            <div class="material-warning" id="practice-material-warning">School teaching notes: use these to learn the strategy, then load your own practice PDF or image for an independent attempt.</div>
+            <div class="material-viewer material-viewer-large" id="practice-viewer">
+              <iframe id="practice-material-frame" title="DHS narrative comprehension material" src="https://drive.google.com/file/d/1u3Ihox-nR3bZhYA3tR0mD-Ep03KPD5ED/preview?authuser=0" allow="autoplay" loading="eager"></iframe>
+              <img id="practice-material-image" class="hidden" alt="Selected practice material" />
+              <pre id="practice-material-text" class="hidden"></pre>
+            </div>
+          </article>
+
+          <form id="practice-form" class="panel exam-form">
+            <div class="exam-meta">
+              <div><label for="practice-source">Source label</label><input id="practice-source" value="Narrative Comprehension Package · DHS Classroom" required /></div>
+              <div><label for="practice-skill">Skill</label><select id="practice-skill"></select></div>
+              <div><label for="practice-marks">Marks</label><input id="practice-marks" type="number" value="2" min="1" max="20" /></div>
+            </div>
+
+            <div class="decomposition-grid">
+              <div class="decomp-card"><span>A</span><label for="practice-command">What is the command?</label><input id="practice-command" placeholder="infer / explain / use your own words" required /></div>
+              <div class="decomp-card"><span>B</span><label for="practice-role">What is the paragraph doing?</label><input id="practice-role" placeholder="background / contrast / evidence / result" required /></div>
+              <div class="decomp-card"><span>C</span><label for="practice-zone">Where is the evidence zone?</label><input id="practice-zone" placeholder="paragraph or line range" required /></div>
+            </div>
+
+            <label for="practice-question">Question reference</label>
+            <textarea id="practice-question" rows="2" placeholder="e.g. Practice 2, Question 4 — or paste the exact question if it is not visible in the reader." required>Apply one strategy from the selected school slide to your practice question.</textarea>
+            <label for="practice-answer">Student’s first answer</label>
+            <textarea id="practice-answer" rows="5" placeholder="Answer before opening any hint." required></textarea>
+
+            <div class="form-actions">
+              <p>Source, conditions and hint level will be saved with the result.</p>
+              <button class="primary-btn" type="submit">Lock first answer <span>→</span></button>
+            </div>
+          </form>
+
+          <article id="practice-review" class="panel feedback-panel hidden">
+            <div class="panel-head"><div><p class="eyebrow">TUTOR REVIEW</p><h2>Diagnose the smallest high-impact gap.</h2></div><span class="source-badge">Coaching mark</span></div>
+            <div class="review-box wide">
+              <div><label for="practice-score">Marks awarded</label><input id="practice-score" type="number" min="0" value="0" /></div>
+              <div><label for="practice-gap">Lost-mark cause</label><select id="practice-gap"></select></div>
+              <div><label for="practice-support">Support used</label><select id="practice-support"><option>Independent</option><option>Task clarified</option><option>Relevant paragraph identified</option><option>Vocabulary pre-taught</option><option>Sentence frame used</option><option>Model shown</option></select></div>
+            </div>
+            <label for="practice-note">One strength, one priority improvement, one next action</label>
+            <textarea id="practice-note" rows="4" placeholder="Keep the feedback specific and actionable."></textarea>
+            <label for="practice-retry">Student retry</label>
+            <textarea id="practice-retry" rows="4" placeholder="Revise or answer a changed-context item."></textarea>
+            <div class="form-actions"><p>This mark is coaching evidence unless an official matching rubric is supplied.</p><button id="save-practice" class="secondary-btn" type="button">Save result & schedule review</button></div>
+          </article>
+        </section>
+
+        <section class="view" id="view-progress">
+          <div class="metrics-grid">
+            <article class="metric-card"><span>BASELINE</span><strong>60%</strong><p>2026 DHS Year 1 EOY Paper 2 · user reported</p></article>
+            <article class="metric-card"><span>NEXT GATE</span><strong>65–70%</strong><p>Two independent section checks before full timed transfer</p></article>
+            <article class="metric-card"><span>FINAL TARGET</span><strong>75–80%</strong><p>Three unseen timed assessments across at least two weeks</p></article>
+          </div>
+
+          <div class="two-column progress-columns">
+            <article class="panel"><div class="panel-head"><h3>Skill map</h3><span>Evidence-weighted</span></div><div id="skill-map" class="skill-map"></div></article>
+            <article class="panel"><div class="panel-head"><h3>Recent evidence</h3><button id="clear-data" class="danger-link">Reset local data</button></div><div id="evidence-list" class="evidence-list"></div></article>
+          </div>
+
+          <article class="panel export-panel">
+            <div><h3>Local learning record</h3><p>Export a JSON backup for the parent or tutor. It contains learning records, not passwords or school account access.</p></div>
+            <div class="export-actions"><button id="export-data" class="secondary-btn">Export backup</button><label class="import-btn">Import backup<input id="import-data" type="file" accept="application/json" /></label></div>
+          </article>
+        </section>
+
+        <section class="view" id="view-sources">
+          <div class="section-heading compact">
+            <div><p class="eyebrow">SOURCE LIBRARY</p><h2>Know exactly what calibrates each judgement.</h2></div>
+            <button id="add-source-toggle" class="secondary-btn">Add source</button>
+          </div>
+
+          <form id="source-form" class="panel source-form hidden">
+            <div><label for="source-title">Title</label><input id="source-title" required /></div>
+            <div><label for="source-provenance">Provenance</label><select id="source-provenance"><option>DHS teacher/school</option><option>Student work</option><option>Official public source</option><option>External practice</option><option>Tutor-created</option><option>User-owned book</option></select></div>
+            <div><label for="source-status">Inspection status</label><select id="source-status"><option>Inventory only</option><option>Partially inspected</option><option>Fully inspected</option></select></div>
+            <div><label for="source-use">Valid use</label><input id="source-use" placeholder="What can this source calibrate?" required /></div>
+            <button class="primary-btn" type="submit">Save source</button>
+          </form>
+
+          <div class="source-table-wrap panel">
+            <table class="source-table">
+              <thead><tr><th>Source</th><th>Provenance</th><th>Status</th><th>Valid use</th></tr></thead>
+              <tbody id="source-table-body"></tbody>
+            </table>
+          </div>
+
+          <div class="policy-strip"><strong>Source rule</strong><span>DHS teacher materials and matching rubrics come first. External and tutor-created work is always labelled.</span></div>
+        </section>
+      </main>
+    </div>
+
+    <button id="menu-fab" class="menu-fab" type="button" aria-label="Open the menu">☰ Menu</button>
+    <div id="nav-backdrop" class="nav-backdrop"></div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="vendor/pdf.min.js"></script>
+    <script src="pdfview.js"></script>
+    <script src="marking.js"></script>
+    <script src="lesson-landlady.js"></script>
+    <script src="reading.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
