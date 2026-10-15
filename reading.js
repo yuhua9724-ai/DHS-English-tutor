@@ -239,7 +239,9 @@ function modelCard(lesson, rs, seg, key, id) {
   const checked = !!(rs.modelsChecked && rs.modelsChecked[seg.id]);
   const draft = seg.modelDraft && !checked;
   let body = "";
-  if (key === "A") body = `<p>${escapeHtml(m.gist)}</p>`;
+  if (key === "A") body = m.gistBasic
+    ? `<div class="model-part"><span>Full marks · simple words</span><p>${escapeHtml(m.gistBasic)}</p></div><div class="model-part"><span>High score · upgraded words</span><p>${escapeHtml(m.gist)}</p></div>`
+    : `<p>${escapeHtml(m.gist)}</p>`;
   else if (key === "B") body = `<p>${escapeHtml(m.detail)}</p><p class="model-why">${escapeHtml(m.detailWhy)}</p>`;
   else body = m.parts.map(([label, text]) => `<div class="model-part"><span>${escapeHtml(label)}</span><p>${escapeHtml(text)}</p></div>`).join("");
   return `
@@ -258,6 +260,54 @@ function compareControls(key, d) {
   }
   const cur = key === "A" ? d.selfA : d.selfB;
   return `<div class="compare"><span>How close was your answer?</span><div class="chips">${[["2", "Matched"], ["1", "Close"], ["0", "Missed"]].map(([v, l]) => `<button type="button" class="chip ${cur === v ? "on" : ""}" data-act="self" data-k="${key}" data-v="${v}">${l}</button>`).join("")}</div></div>`;
+}
+
+function wordBank() { state.words ||= []; return state.words; }
+
+function wordsCard(seg) {
+  if (!seg.words || !seg.words.length) return "";
+  const saved = seg.words.every(x => wordBank().some(b => b.w === x.w));
+  return `<div class="words-card"><div class="words-top"><strong>Words to steal from this section</strong><span>These are from the school text. Use them in your own sentences.</span></div>
+    <ul>${seg.words.map(x => `<li><b>${escapeHtml(x.w)}</b> <em>${escapeHtml(x.zh)}</em><span>${escapeHtml(x.plain)}</span><i>“${escapeHtml(x.say)}”</i></li>`).join("")}</ul>
+    ${saved ? `<p class="words-saved">✓ Saved to your word bank. You will be asked to recall them tomorrow.</p>` : `<button type="button" class="secondary-btn" data-act="save-words">Save these words to my word bank</button>`}</div>`;
+}
+
+function dueWords(limit = 3) {
+  const today = todayISO();
+  return wordBank().filter(b => b.due <= today).slice(0, limit);
+}
+
+function recallCard() {
+  const due = dueWords();
+  if (!due.length) return "";
+  return `<article class="recall-card"><div class="words-top"><strong>Quick word recall</strong><span>${wordBank().length} words in your bank. Type the English word for each meaning.</span></div>
+    ${due.map(b => `<div class="recall-row" data-wid="${b.id}"><p>${escapeHtml(b.zh)} <em>${escapeHtml(b.plain)}</em></p><div class="recall-in"><input id="rc-${b.id}" type="text" autocomplete="off" placeholder="type the word" /><button type="button" class="secondary-btn" data-act="recall-check" data-id="${b.id}">Check</button></div></div>`).join("")}</article>`;
+}
+
+function recallCheck(id) {
+  const b = wordBank().find(x => x.id === id);
+  const input = document.querySelector(`#rc-${id}`);
+  if (!b || !input) return;
+  const norm = s => String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const typed = norm(input.value), want = norm(b.w);
+  if (!typed) return showToast("Type the word first.");
+  const ok = typed === want || (typed.length >= 4 && want.startsWith(typed.slice(0, Math.max(4, want.length - 3))) && typed.startsWith(want.slice(0, Math.max(4, want.length - 3))));
+  const steps = [1, 3, 7, 14];
+  b.seen = (b.seen || 0) + 1;
+  if (ok) { b.got = (b.got || 0) + 1; b.box = Math.min(3, (b.box || 0) + 1); b.due = plusDays(steps[b.box]); }
+  else { b.box = 0; b.due = plusDays(1); }
+  persist();
+  const row = document.querySelector(`.recall-row[data-wid="${id}"]`);
+  if (row) row.innerHTML = `<p class="${ok ? "rc-ok" : "rc-no"}">${ok ? "✓" : "✗"} <b>${escapeHtml(b.w)}</b> <em>${escapeHtml(b.zh)}</em></p><p class="rc-say">“${escapeHtml(b.say)}”</p>`;
+  showToast(ok ? "Correct. You will see it again later." : "Not yet. You will see it again tomorrow.");
+}
+
+function saveWords() {
+  const { seg } = currentCtx();
+  if (!seg.words) return;
+  const bank = wordBank();
+  seg.words.forEach(x => { if (!bank.some(b => b.w === x.w)) bank.push({ id: crypto.randomUUID(), w: x.w, plain: x.plain, zh: x.zh, say: x.say, src: seg.title, box: 0, due: plusDays(1), seen: 0, got: 0 }); });
+  persist(); renderReader(); showToast("Saved. You will be asked to recall them tomorrow.");
 }
 
 function typeChip(seg, key) {
@@ -290,7 +340,7 @@ function renderStep(lesson, rs, seg, d, key) {
     if (key === "B") mine = lockedAnswer("Your answer", d.detail + (d.detailWhy ? "  —  " + d.detailWhy : ""));
     if (key === "C") mine = lockedAnswer("Your answer", d.inference);
     const res = d.auto && d.auto[key];
-    return stepCard(key, meta.title, meta.meta, `${typeChip(seg, key)}${mine}${markCard(res, "First attempt")}${modelCard(lesson, rs, seg, key, modelId)}${compareControls(key, d)}`, key === "C" ? "focus-card" : "");
+    return stepCard(key, meta.title, meta.meta, `${typeChip(seg, key)}${mine}${markCard(res, "First attempt")}${modelCard(lesson, rs, seg, key, modelId)}${key === "A" ? wordsCard(seg) : ""}${compareControls(key, d)}`, key === "C" ? "focus-card" : "");
   }
   const seeLink = "";
   const early = typeChip(seg, key);
@@ -358,6 +408,7 @@ function renderSeg(lesson, rs, seg, n, d) {
     </article>`;
   }
   const out = [renderRangeCard(lesson, rs, seg, n, d)];
+  if (!lesson.free && !d.checked.A) { const rc = recallCard(); if (rc) out.push(rc); }
   if (demo && !lesson.free && scaffoldOf(seg) !== "none") out.push(`<details class="demo-card"><summary>Look at the model again (different text)</summary>${demoBody(demo)}</details>`);
   out.push(renderStep(lesson, rs, seg, d, "A"));
   if (d.checked.A) out.push(renderStep(lesson, rs, seg, d, "B"));
@@ -796,6 +847,8 @@ function initReader() {
     else if (act === "demo-ok") { ctx.rs.demoSeen = true; persist(); renderReader(); scrollTaskTop(); }
     else if (act === "show-frame") { ctx.d.frameUsed = true; persist(); renderReader(); }
     else if (act === "see-first") { ctx.d.seenFirst[btn.dataset.k] = true; persist(); renderReader(); setTimeout(() => scrollToEl(document.querySelector(`#model-${btn.dataset.k}`)), 60); }
+    else if (act === "save-words") saveWords();
+    else if (act === "recall-check") recallCheck(btn.dataset.id);
     else if (act === "check") checkStep(btn.dataset.k);
     else if (act === "check-retry") {
       if (wordCount(ctx.d.retry) < 10) return showToast("Write your rewrite first (at least 10 words).");

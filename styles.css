@@ -497,3 +497,23 @@ body.focus-mode .text-pane .material-viewer { height: auto; min-height: 0; }
 .submit-note { font-size: 0.8rem; color: #6b6b5e; }
 .compare-line { margin: 10px 0 0; font-size: 0.95rem; color: #1f3a31; }
 .compare-line span { color: #6b6b5e; font-size: 0.8rem; }
+
+/* v1.4 words to steal + recall */
+.words-card, .recall-card { border: 1px solid #e3d6a8; background: #fffaf0; border-radius: 12px; padding: 12px 14px; margin: 12px 0; }
+.recall-card { margin: 0 0 14px; }
+.words-top { display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px; }
+.words-top strong { color: #1f3a31; }
+.words-top span { font-size: 0.8rem; color: #6b6b5e; }
+.words-card ul { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 8px; }
+.words-card li { display: grid; gap: 1px; }
+.words-card li b { font-size: 1.05rem; color: #7a4a12; }
+.words-card li em { font-style: normal; font-size: 0.85rem; color: #4d5a52; }
+.words-card li span { font-size: 0.9rem; }
+.words-card li i { font-size: 0.85rem; color: #6b6b5e; }
+.words-saved { margin: 0; color: #1f7a4a; font-size: 0.9rem; }
+.recall-row { padding: 8px 0; border-top: 1px dashed #e3d6a8; }
+.recall-row p { margin: 0 0 6px; }
+.recall-row em { font-style: normal; font-size: 0.85rem; color: #6b6b5e; }
+.recall-in { display: flex; gap: 8px; }
+.recall-in input { flex: 1; padding: 8px 10px; border: 1px solid #d9d2bf; border-radius: 8px; font: inherit; }
+.rc-ok { color: #1f7a4a; } .rc-no { color: #b3402a; } .rc-say { color: #6b6b5e; font-size: 0.85rem; }

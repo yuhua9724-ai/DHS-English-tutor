@@ -6,7 +6,7 @@
 const Marking = (() => {
   const words = t => (String(t || "").trim().match(/\S+/g) || []);
   const rx = (src, flags = "i") => new RegExp(src, flags);
-  const META = /(\bi\s*(do\s*n'?o?t?|dont|can'?t|cannot)\s*(know|understand|get)|not sure|no idea|\bidk\b|give up)/i;
+  const META = /(\bi\s*(do\s*n'?o?t?|dont|can'?t|cannot)\s*(know|understand|get)|\bi(?:'m| am)? not sure|no idea|\bidk\b|give up)/i;
   const LINK = /\b(suggests?|suggesting|shows?|showing|implies|implying|means|makes (him|her|the reader|readers|us|it)|because|so that|reveals?|hints?|proves?|indicates?|reminds?|tells? us)\b/gi;
 
   const pt = (id, desc, got, feedback) => ({ id, desc, got, feedback: got ? "" : feedback });

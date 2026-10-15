@@ -16,7 +16,7 @@ const LANDLADY_SEGMENTS = [
     detailPrompt: "Identify one important detail from this section and explain why it matters (use your own words).",
     inferencePrompt: "What impression do you get of Billy in this section? Support your answer with two details from the text and explain how each detail creates this impression.",
     rubric: {
-      A: { minWords: 12, need: 2, core: R`window|notice|bed and breakfast|b ?& ?b|stop(s|ped)?\b|closer|drawn|attract|fascinat|peer|fire|dog|chrysanthemum|curtain|cosy|cozy|welcoming`,
+      A: { minWords: 12, need: 2, core: R`window|notice|sign|bed and breakfast|b ?& ?b|stop(s|ped)?\b|closer|drawn|attract|fascinat|interest|inviting|peer|fire|dog|chrysanthemum|curtain|cosy|cozy|warm|welcoming|wants? to (look|stay|go in)`,
         groups: [R`billy`, R`arriv|train|bath|london|travel|came|walk`, R`window|notice|bed and breakfast|b ?& ?b|house|stop|closer|attract|fascinat|stay|room|lodging|hotel|look`],
         outOfRange: R`landlady|woman|door (opens|opened|swung)|\btea\b|guest.?book|stuffed`,
         outOfRangeMsg: "You included information that appears later in the story (for example, the landlady opening the door). Stay only within this section.",
@@ -291,3 +291,56 @@ const LANDLADY_SEGMENTS = [
     tutorGuide: ["The ending is open, so accept a prediction only if two details from this section lead to it.", "Strong answers link a detail here with something noticed earlier.", "Marks: 1 precise prediction · 1 two relevant details · 1 each detail linked."]
   }
 ];
+
+/* Simple full-marks gists and school-text words for each section (words verified to appear inside the section's range). */
+const LANDLADY_EXTRAS = {
+  s1: { gistBasic: "Billy arrives in Bath and looks for a cheap place to stay, then he stops at a house with a Bed and Breakfast sign because it looks warm and nice.",
+    words: [
+      { w: "brisk", plain: "quick and full of energy", zh: "敏捷有力的", say: "Billy tries to walk briskly like a businessman." },
+      { w: "swanky", plain: "grand and fashionable", zh: "豪华时髦的", say: "The houses were once swanky, but now they are run-down." },
+      { w: "facades", plain: "the fronts of buildings", zh: "建筑物的正面", say: "The white facades are cracked from neglect." },
+      { w: "neglect", plain: "not looking after something", zh: "疏于照料", say: "The paint is peeling from neglect." }
+    ] },
+  s2: { gistBasic: "Billy is not sure whether to stay here or go to the pub, but the sign seems to pull him in and he walks up to the door and rings the bell.",
+    words: [
+      { w: "dithering", plain: "not able to decide", zh: "犹豫不决", say: "Billy is dithering in the cold." },
+      { w: "rapacious", plain: "greedy and grasping", zh: "贪婪的", say: "He imagines rapacious landladies." },
+      { w: "peculiar", plain: "strange", zh: "奇怪的", say: "A peculiar thing happens to him." },
+      { w: "compelling", plain: "forcing you to do something", zh: "强迫的,难以抗拒的", say: "The notice seems to be compelling him to stay." },
+      { w: "congenial", plain: "pleasant and friendly", zh: "令人愉快的", say: "A pub would be more congenial." }
+    ] },
+  s3: { gistBasic: "The landlady opens the door at once, smiles, welcomes Billy in and offers him a very cheap room, so he goes inside.",
+    words: [
+      { w: "compulsion", plain: "a very strong urge you can't resist", zh: "难以抗拒的冲动", say: "He feels a compulsion to follow her." },
+      { w: "threshold", plain: "the doorway into a room or house", zh: "门槛,门口", say: "Billy steps over the threshold." },
+      { w: "jack-in-the-box", plain: "a toy that pops up suddenly", zh: "弹出来的玩偶盒", say: "She pops out like a jack-in-the-box." }
+    ] },
+  s4: { gistBasic: "The landlady takes Billy upstairs to a room that is already ready, and she tells him that he is the only guest and that she is very choosy.",
+    words: [
+      { w: "dotty", plain: "a little mad or odd", zh: "有点疯疯癫癫的", say: "Billy thinks she is slightly dotty." },
+      { w: "swamped", plain: "having far too many to deal with", zh: "应接不暇", say: "He thinks she must be swamped with guests." },
+      { w: "choosy", plain: "careful about what you choose", zh: "挑剔的", say: "She says she is a teeny bit choosy." },
+      { w: "earnestly", plain: "in a serious, sincere way", zh: "认真地,恳切地", say: "She looks earnestly into his face." }
+    ] },
+  s5: { gistBasic: "Billy thinks the landlady is harmless, then he signs the guest book and sees two old names that he feels he has heard before.",
+    words: [
+      { w: "off her rocker", plain: "a little mad (informal)", zh: "有点疯了", say: "He thinks she is slightly off her rocker." },
+      { w: "rings a bell", plain: "sounds familiar", zh: "听起来耳熟", say: "The name rings a bell." },
+      { w: "harmless", plain: "not able or likely to hurt anyone", zh: "无害的", say: "He decides she is harmless." }
+    ] },
+  s6: { gistBasic: "The landlady talks about the two young men in a strange way and says they never left but are still upstairs.",
+    words: [
+      { w: "tantalising", plain: "teasing: close but just out of reach", zh: "吊人胃口的", say: "Not remembering the names is tantalising." },
+      { w: "emanate", plain: "come out from", zh: "散发出", say: "A smell seems to emanate from her." },
+      { w: "whiff", plain: "a faint smell", zh: "一丝气味", say: "He catches a whiff of a strange smell." },
+      { w: "blemish", plain: "a mark that spoils something", zh: "瑕疵", say: "There wasn't a blemish on his body." },
+      { w: "trifle", plain: "a little", zh: "一点点", say: "Mr Mulholland was a trifle shorter." }
+    ] },
+  s7: { gistBasic: "Billy finds out that the parrot and the dog are stuffed, the tea tastes strange, and the landlady says he is her only guest for years.",
+    words: [
+      { w: "preserved", plain: "kept from rotting", zh: "被保存下来", say: "The dog's skin is perfectly preserved." },
+      { w: "pass away", plain: "die (a gentler way to say it)", zh: "去世(委婉说法)", say: "She stuffs her pets when they pass away." },
+      { w: "admiration", plain: "respect and approval", zh: "钦佩", say: "Billy looks at her with deep admiration." }
+    ] }
+};
+LANDLADY_SEGMENTS.forEach(s => { const x = LANDLADY_EXTRAS[s.id]; if (x) { s.words = x.words; s.model.gistBasic = x.gistBasic; } });
