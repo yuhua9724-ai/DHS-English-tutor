@@ -20,7 +20,7 @@ const Marking = (() => {
     return { max, score: Math.min(max, score), points, errors, note: note || "" };
   }
 
-  /* A · Gist (1 mark) */
+  /* A · Gist (1 mark): needs BOTH the "who + what" part and the section's key result */
   function markA(seg, text) {
     const r = (seg.rubric && seg.rubric.A) || {};
     const t = String(text || "");
@@ -29,16 +29,17 @@ const Marking = (() => {
     const wc = words(t).length;
     if (wc < (r.minWords || 12)) errors.push("Your sentence is too short or too general. It does not fully explain what happens in this section.");
     if (r.outOfRange && rx(r.outOfRange).test(t)) errors.push(r.outOfRangeMsg || "You included information from a later part of the story. Stay inside this section.");
-    const groups = (r.groups || []).map(g => rx(g).test(t));
-    const hit = groups.filter(Boolean).length;
-    const coreOk = r.core ? rx(r.core).test(t) : true;
-    const who = hit >= (r.need || 2) && coreOk;
-    if (!who && !errors.length) errors.push(r.missing || "You missed the key point of this section.");
+    const hit = (r.groups || []).filter(g => rx(g).test(t)).length;
+    const whoOk = hit >= (r.need || 2);
+    const resultOk = r.core ? rx(r.core).test(t) : true;
     const copy = copiedRun(t, 9);
     if (copy) errors.push(`You copied a long run from the text (“${copy}…”). Say it in your own words.`);
-    const got = who && !errors.length;
-    const points = [pt("core", r.desc || "Says who + what happens + the key result", got, r.missing || "Say who did what and the key result in this section.")];
-    return finish(1, points, errors);
+    const points = [
+      pt("who_what", "Says who + what he is doing", whoOk, "Say who the section is about and what he is doing."),
+      pt("result", "Reaches the key result of the whole section (not only the beginning)", resultOk, r.missing || "Your sentence stops too early. Add what happens at the END of the section.")
+    ];
+    const score = whoOk && resultOk && !errors.length ? 1 : 0;
+    return { max: 1, score, points, errors, note: "" };
   }
 
   /* B · Key detail (1 mark: a relevant detail AND its function, in own words) */
