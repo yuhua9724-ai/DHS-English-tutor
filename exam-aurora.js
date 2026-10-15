@@ -201,5 +201,19 @@ const EXAM_AURORA = (() => {
     return { max: 10, score: content, points, errors, wc, note: "Content points only (10). The 5 language marks need a tutor." };
   }
 
-  return { id: "aurora", title: "WA3 2024 · Y1 DHP · Text 4 (aurora)", total: 25, minutes: 50, questions, markSummary, summaryOpening: OPENING, version: "1.0.0" };
+  const PARA = {
+    1: { start: "Auroras have captivated", end: "aurora australis" },
+    2: { start: "Inspired by Aurora, the Roman goddess", end: "existence of the aurora" },
+    3: { start: "If you have ever been fortunate", end: "pathway to the afterlife" },
+    4: { start: "The Vikings celebrated the northern lights", end: "fallen in battle" },
+    5: { start: "Many North American tribes", end: "Nanahbozho" },
+    6: { start: "A particularly poetic aurora myth", end: "a generous catch" },
+    7: { start: "However, not all cultures celebrate", end: "through the aurora" },
+    8: { start: "According to researchers, the indigenous", end: "when the lights are overhead" }
+  };
+  const w1 = n => ({ label: "¶" + n, text: "paragraph " + n, start: PARA[n].start, end: PARA[n].end });
+  const where = { q1: w1(1), q2: w1(1), q3a: w1(2), q3b: w1(2), q4: w1(2), q5a: w1(7), q5b: w1(8), q6: w1(8),
+    q7: { label: "¶4–6", text: "paragraphs 4–6", start: PARA[4].start, end: PARA[6].end } };
+
+  return { where, id: "aurora", title: "WA3 2024 · Y1 DHP · Text 4 (aurora)", total: 25, minutes: 50, questions, markSummary, summaryOpening: OPENING, version: "1.0.0" };
 })();
