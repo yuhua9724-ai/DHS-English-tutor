@@ -551,3 +551,9 @@ body.focus-mode .text-pane .material-viewer { height: auto; min-height: 0; }
 .find-seg-btn { margin-left: 6px; border: 1px solid #5b7bb8; background: #fff; color: #31508a; border-radius: 999px; padding: 2px 10px; font-size: .8rem; font-weight: 700; cursor: pointer; }
 .step-letter { width: auto; min-width: 34px; padding: 0 7px; font-size: 12px; }
 .open-all-btn { border: 1px dashed #b9b19c; background: transparent; color: #6b6b5e; border-radius: 999px; padding: 6px 12px; font-size: .78rem; font-weight: 700; cursor: pointer; }
+.q-line.asked { background: #fff8e6; border-left: 4px solid #e9b95c; border-radius: 8px; padding: 8px 10px; margin: 0 0 10px; }
+.reset-seg-btn { margin-left: 8px; color: #a0442f; }
+.pdf-tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: flex-end; }
+.exam-split.wide { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
+.exam-split.wide .exam-frame { height: 90vh; }
+@media (max-width: 900px) { .exam-split.wide { grid-template-columns: 1fr; } }
