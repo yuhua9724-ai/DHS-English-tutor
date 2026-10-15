@@ -24,9 +24,9 @@ const lessons = {
       passage: "Mei Ling stood at the school gate long after the last bell. The other students had gone, but she kept checking her watch and glancing down the empty road. When a bicycle finally appeared in the distance, she let out a long breath, straightened her bag, and began to walk towards it, slowly, as though she did not want anyone to see how relieved she was.",
       question: "What impression do you get of how Mei Ling feels while she waits? Support it with two details and explain how they support your impression.",
       steps: [
-        { label: "A · Gist", answer: "Mei Ling waits anxiously at the school gate after everyone has left, and she is relieved when someone cycles towards her.", think: "One sentence: who, what happened, and why. I left out small description." },
-        { label: "B · Key detail", answer: "She “kept checking her watch”. This shows she was worried and impatient because the person she was waiting for was late.", think: "I picked an action, not a description of the road. Then I said what it shows." },
-        { label: "C · Inference", answer: "I get the impression that Mei Ling is anxious. Firstly, she “kept checking her watch”, which suggests she is worried that the person is late. Also, she “let out a long breath” when the bicycle appears, which shows she had been tense until then.", think: "Impression first (one word: anxious). Two details that show the feeling. After each detail, “which suggests / shows…” gives the link." }
+        { label: "Q1 · Gist", answer: "Mei Ling waits anxiously at the school gate after everyone has left, and she is relieved when someone cycles towards her.", think: "One sentence: who, what happened, and why. I left out small description." },
+        { label: "Q2 · Key detail", answer: "She “kept checking her watch”. This shows she was worried and impatient because the person she was waiting for was late.", think: "I picked an action, not a description of the road. Then I said what it shows." },
+        { label: "Q3 · Inference", answer: "I get the impression that Mei Ling is anxious. Firstly, she “kept checking her watch”, which suggests she is worried that the person is late. Also, she “let out a long breath” when the bicycle appears, which shows she had been tense until then.", think: "Impression first (one word: anxious). Two details that show the feeling. After each detail, “which suggests / shows…” gives the link." }
       ],
       marks: ["1 mark: a precise impression (anxious)", "1 mark: two relevant details from the text", "1 mark: each detail is linked to the impression"]
     },
@@ -102,7 +102,8 @@ function currentIndex(lesson, rs) {
 function allowedMaxIndex(lesson, rs) {
   const ids = lessonIds(lesson);
   const cur = currentIndex(lesson, rs);
-  return cur === -1 ? ids.length - 1 : cur;
+  if (cur === -1) return ids.length - 1;
+  return rs.openAll ? lesson.segments.length - 1 : cur;
 }
 
 function viewIdFor(lesson, rs) {
@@ -171,7 +172,7 @@ function renderPills(lesson, rs) {
     const title = isFinal ? lesson.final.title : lesson.segments[i].title;
     const cls = ["seg-pill", done ? "done" : "", locked ? "locked" : "", id === rs.view ? "viewing" : ""].join(" ").trim();
     return `<li><button type="button" class="${cls}" data-act="goto" data-id="${id}" ${locked ? "disabled" : ""} title="${escapeHtml(title)}"><span>${label}</span><em>${escapeHtml(title)}</em></button></li>`;
-  }).join("");
+  }).join("") + `<li><button type="button" class="open-all-btn" data-act="toggle-open-all">${rs.openAll ? "Lock order" : "Open any section"}</button></li>`;
 }
 
 function renderTask(lesson, rs) {
@@ -214,7 +215,7 @@ function renderRangeCard(lesson, rs, seg, n, d) {
 }
 
 function stepCard(key, title, meta, body, extraClass = "") {
-  return `<article class="step-card ${extraClass}" data-step="${key}"><div class="step-head"><span class="step-letter">${key}</span><h3>${title}</h3>${meta ? `<span class="step-meta">${meta}</span>` : ""}</div>${body}</article>`;
+  return `<article class="step-card ${extraClass}" data-step="${key}"><div class="step-head"><span class="step-letter">${({ A: "Q1", B: "Q2", C: "Q3" })[key] || key}</span><h3>${title}</h3>${meta ? `<span class="step-meta">${meta}</span>` : ""}</div>${body}</article>`;
 }
 
 function counterHtml(field, text, range) {
@@ -327,7 +328,7 @@ function typeChip(seg, key) {
   const t = seg.tags && seg.tags[key];
   const L = typeof lessons !== "undefined" && lessons.landlady;
   const n = L ? L.segments.indexOf(seg) : -1;
-  const where = n >= 0 && seg.start ? `<p class="where-line"><b>Section ${n + 1} of ${L.segments.length}: ${escapeHtml(seg.title)}</b> · this question is only about the text from <b>▶ ${n + 1}</b> to <b>■ ${n + 1}</b> (starts “${escapeHtml(seg.start)}…”).</p>` : "";
+  const where = n >= 0 && seg.start ? `<p class="where-line"><b>Section ${n + 1} of ${L.segments.length}: ${escapeHtml(seg.title)}</b> · Q1, Q2 and Q3 are all about the text from <b>▶ ${n + 1}</b> to <b>■ ${n + 1}</b> (starts “${escapeHtml(seg.start)}…”). <button type="button" class="find-seg-btn" data-act="find-seg">↑ Show it in the text</button></p>` : "";
   return where + (t ? `<span class="type-chip">School question type: ${escapeHtml(t)}</span>` : "");
 }
 
@@ -393,10 +394,10 @@ function reviewControls(seg, d) {
   <details class="tutor-review">
     <summary>Tutor review (optional) · mark the first attempt</summary>
     <div class="rv-grid">
-      <div><label>A · Gist</label>${sel("g", rv.g)}</div>
-      <div><label>B · Key detail</label>${sel("d", rv.d)}</div>
+      <div><label>Q1 · Gist</label>${sel("g", rv.g)}</div>
+      <div><label>Q2 · Key detail</label>${sel("d", rv.d)}</div>
     </div>
-    <label class="sub-label">C · Inference (tick what is present, 1 mark each)</label>
+    <label class="sub-label">Q3 · Inference (tick what is present, 1 mark each)</label>
     <div class="answer-checks rv-checks">${crit.map((c, i) => `<label><input type="checkbox" data-rvcheck="${i}" ${rv.c[i] ? "checked" : ""} /> ${c}</label>`).join("")}</div>
     <label for="rv-note" class="sub-label">One strength and one next action (optional)</label>
     <textarea id="rv-note" data-rv="note" rows="2" placeholder="Strength… Next action…">${escapeHtml(rv.note)}</textarea>
@@ -867,6 +868,8 @@ function initReader() {
     else if (act === "demo-ok") { ctx.rs.demoSeen = true; persist(); renderReader(); scrollTaskTop(); }
     else if (act === "show-frame") { ctx.d.frameUsed = true; persist(); renderReader(); }
     else if (act === "see-first") { ctx.d.seenFirst[btn.dataset.k] = true; persist(); renderReader(); setTimeout(() => scrollToEl(document.querySelector(`#model-${btn.dataset.k}`)), 60); }
+    else if (act === "find-seg") { if (!(typeof PdfView !== "undefined" && PdfView.scrollTo(ctx.rs.view))) showToast("Load the school PDF on the left first."); }
+    else if (act === "toggle-open-all") { ctx.rs.openAll = !ctx.rs.openAll; persist(); renderReader(); }
     else if (act === "save-words") saveWords();
     else if (act === "recall-check") recallCheck(btn.dataset.id);
     else if (act === "check") checkStep(btn.dataset.k);
